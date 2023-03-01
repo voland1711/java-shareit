@@ -61,7 +61,7 @@ public class ItemServiceImpl implements ItemService {
         if (item.getName() == null) {
             item.setName(oldItem.getName());
         }
-        if (item.getDescription()== null) {
+        if (item.getDescription() == null) {
             item.setDescription(oldItem.getDescription());
         }
         if (item.getAvailable() == null) {
@@ -79,7 +79,7 @@ public class ItemServiceImpl implements ItemService {
 
     @Override
     public List<ItemDto> searchItems(long userId, String text) {
-        if(text.isEmpty()){
+        if (text.isEmpty()) {
             return new ArrayList<>();
         }
         return itemRepository.searchItems(text.toLowerCase()).stream()
