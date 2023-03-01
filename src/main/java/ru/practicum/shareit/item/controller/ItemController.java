@@ -16,7 +16,7 @@ import java.util.List;
 @RequestMapping("/items")
 @RequiredArgsConstructor
 public class ItemController {
-    private  final ItemService itemService;
+    private final ItemService itemService;
 
     @GetMapping
     public List<ItemDto> getAllItems(@RequestHeader("X-Sharer-User-Id") long userId) {
@@ -35,7 +35,7 @@ public class ItemController {
 
     @PatchMapping("/{itemId}")
     public ItemDto updateItem(@RequestHeader("X-Sharer-User-Id") long userId, @RequestBody Item item,
-                          @PathVariable long itemId) {
+                              @PathVariable long itemId) {
         return itemService.updateItem(userId, item, itemId);
     }
 
