@@ -16,6 +16,8 @@ import ru.practicum.shareit.user.repository.UserRepository;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Optional;
+import java.util.function.Consumer;
 import java.util.stream.Collectors;
 
 @Slf4j
@@ -58,28 +60,18 @@ public class ItemServiceImpl implements ItemService {
             throw new ObjectNotFoundException("Пользователь не найден");
         }
         item.setId(itemId);
-        if (item.getName() == null) {
-            item.setName(oldItem.getName());
-        }
-        if (item.getDescription() == null) {
-            item.setDescription(oldItem.getDescription());
-        }
-        if (item.getAvailable() == null) {
-            item.setAvailable(oldItem.getAvailable());
-        }
-        if (item.getOwner() == null) {
-            item.setOwner(oldItem.getOwner());
-        }
-        if (item.getRequest() == null) {
-            item.setRequest(oldItem.getRequest());
-        }
-        log.info("Вещь отправления для обновления.");
-        return ItemMapper.toItemDto(itemRepository.updateItem(item, itemId));
+        Optional.ofNullable(item.getName()).ifPresent(oldItem::setName);
+        Optional.ofNullable(item.getDescription()).ifPresent(oldItem::setDescription);
+        Optional.ofNullable(item.getAvailable()).ifPresent(oldItem::setAvailable);
+        Optional.ofNullable(item.getOwner()).ifPresent(oldItem::setOwner);
+        Optional.ofNullable(item.getRequest()).ifPresent(oldItem::setRequest);
+        log.info("Вещь отправлена для обновления.");
+        return ItemMapper.toItemDto(itemRepository.updateItem(oldItem, itemId));
     }
 
     @Override
     public List<ItemDto> searchItems(long userId, String text) {
-        if (text.isEmpty()) {
+        if (StringUtils.isBlank(text)) {
             return new ArrayList<>();
         }
         return itemRepository.searchItems(text.toLowerCase()).stream()

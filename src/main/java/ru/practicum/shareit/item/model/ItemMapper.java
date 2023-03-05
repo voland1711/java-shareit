@@ -1,9 +1,10 @@
 package ru.practicum.shareit.item.model;
 
+import lombok.NonNull;
 import ru.practicum.shareit.item.dto.ItemDto;
 
 public class ItemMapper {
-    public static ItemDto toItemDto(Item item) {
+    public static ItemDto toItemDto(@NonNull Item item) {
         return ItemDto
                 .builder()
                 .id(item.getId())

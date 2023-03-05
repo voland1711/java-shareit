@@ -9,14 +9,13 @@ import ru.practicum.shareit.user.exception.ObjectNotFoundException;
 import ru.practicum.shareit.user.exception.ValidationException;
 
 import java.util.*;
+import java.util.stream.Collectors;
 
 @Slf4j
 @Repository
 public class UserRepositoryImpl implements UserRepository {
     private long nextUserId = 0;
     private final Map<Long, User> users = new HashMap<>();
-    private final Set<String> usersUsedEmail = new HashSet<>();
-    private final Set<String> listUsersRegistred = new HashSet<>();
 
     @Override
     public List<User> getAllUsers() {
@@ -34,10 +33,7 @@ public class UserRepositoryImpl implements UserRepository {
         validationUser(user);
         long userId = getNextId();
         user.setId(userId);
-
         users.put(userId, user);
-        usersUsedEmail.add(user.getEmail());
-        listUsersRegistred.add(user.getName());
         log.info("Пользователь - {}, успешно создан", userId);
         return user;
     }
@@ -46,31 +42,22 @@ public class UserRepositoryImpl implements UserRepository {
     public User updateUser(User user, Long userId) {
         if (StringUtils.isBlank(user.getEmail()) && StringUtils.isEmpty(user.getEmail())) {
             user.setEmail(getUserById(userId).getEmail());
-        } else {
-            usersUsedEmail.remove(getUserById(userId).getEmail());
-            if (usersUsedEmail.contains(user.getEmail())) {
-                throw new ValidationException("Адрес электронной почты уже зарегистрирован");
-            }
         }
-
+        if (usedEmail(user, userId)) {
+            throw new ValidationException("Адрес электронной почты уже зарегистрирован");
+        }
         if (StringUtils.isBlank(user.getName()) && StringUtils.isEmpty(user.getName())) {
             user.setName(getUserById(userId).getName());
-        } else {
-            listUsersRegistred.remove(getUserById(userId).getName());
         }
 
         user.setId(userId);
         users.put(userId, user);
-        usersUsedEmail.add(user.getEmail());
-        listUsersRegistred.add(user.getName());
         log.info("Пользователя - {}, успешно обновлен", user.getId());
         return user;
     }
 
     @Override
     public void deleteUser(Long userId) {
-        usersUsedEmail.remove(getUserById(userId).getEmail());
-        listUsersRegistred.remove(getUserById(userId).getName());
         users.remove(userId);
         log.info("Пользователь - {} удален из коллекции.", userId);
     }
@@ -88,13 +75,10 @@ public class UserRepositoryImpl implements UserRepository {
             throw new EmailNotFoundException("Отсутсвует адрес электронной почты");
         }
 
-        if (usersUsedEmail.contains(user.getEmail())) {
+        if (usedEmail(user, user.getId())) {
             throw new ValidationException("Адрес электронной почты уже зарегистрирован");
         }
 
-        if (listUsersRegistred.contains(user.getName())) {
-            throw new ValidationException("Пользователь уже зарегистрирован");
-        }
     }
 
     private void existUser(long userId) {
@@ -102,4 +86,12 @@ public class UserRepositoryImpl implements UserRepository {
             throw new ObjectNotFoundException("Пользователь не найден");
         }
     }
+
+    private boolean usedEmail(User user, long userId) {
+        return users.values().stream()
+                .filter(tempUser -> tempUser.getId() != userId)
+                .filter(tempUser -> tempUser.getEmail().contains(user.getEmail()))
+                .collect(Collectors.toList()).size() > 0;
+    }
+
 }

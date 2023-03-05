@@ -2,6 +2,7 @@ package ru.practicum.shareit.item.repository;
 
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.apache.commons.lang.StringUtils;
 import org.springframework.stereotype.Repository;
 import ru.practicum.shareit.item.model.Item;
 import ru.practicum.shareit.user.exception.ObjectNotFoundException;
@@ -30,7 +31,7 @@ public class ItemRepositoryImpl implements ItemRepository {
 
     @Override
     public Item getItemById(long itemId) {
-        existItem(itemId);
+        existItemById(itemId);
         log.info("Поступил запрос на получение веще с id = {}", itemId);
         return items.get(itemId);
     }
@@ -53,7 +54,7 @@ public class ItemRepositoryImpl implements ItemRepository {
     @Override
     public List<Item> searchItems(String text) {
         return new ArrayList(items.values().stream()
-                .filter(item -> item.getDescription().toLowerCase().contains(text))
+                .filter(item -> StringUtils.containsIgnoreCase(item.getDescription(),text))
                 .filter(item -> item.getAvailable())
                 .collect(Collectors.toList()));
     }
@@ -62,7 +63,7 @@ public class ItemRepositoryImpl implements ItemRepository {
         return ++nextItemId;
     }
 
-    private void existItem(long userId) {
+    private void existItemById(long userId) {
         if (!items.containsKey(userId)) {
             throw new ObjectNotFoundException("Вещь отсутствует в коллекции");
         }
