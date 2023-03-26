@@ -24,7 +24,6 @@ public class ItemController {
     private final ItemService itemService;
     private final CommentService commentService;
     private static final String SHARER_USER_ID = "X-Sharer-User-Id";
-    private static final String ITEM_ID_COMMENT = "/{itemId}/comment";
 
     @GetMapping
     public List<ItemDto> getAllItems(@RequestHeader(SHARER_USER_ID) long userId) {
@@ -32,7 +31,7 @@ public class ItemController {
         return itemService.getAllItems(userId);
     }
 
-    @GetMapping("{itemId}")
+    @GetMapping("/{itemId}")
     public ItemDto getItemById(@RequestHeader(SHARER_USER_ID) long userId, @PathVariable long itemId) {
         log.info("Работает: ItemController.getItemById");
         return itemService.getItemById(userId, itemId);
@@ -44,7 +43,7 @@ public class ItemController {
         return itemService.createItem(userId, itemDto);
     }
 
-    @PatchMapping("{itemId}")
+    @PatchMapping("/{itemId}")
     public ItemDto updateItem(@RequestHeader(SHARER_USER_ID) long userId, @RequestBody Item item,
                               @PathVariable long itemId) {
         log.info("Работает: ItemController.updateItem");
@@ -57,7 +56,7 @@ public class ItemController {
         return itemService.searchItems(userId, text);
     }
 
-    @PostMapping(ITEM_ID_COMMENT)
+    @PostMapping("/{itemId}/comment")
     public CommentDto createComment(@PathVariable Long itemId, @RequestHeader(SHARER_USER_ID) Long userId,
                                     @Valid @RequestBody CommentShortDto commentShortDto) {
         log.info("Работает: ItemController.createComment");
