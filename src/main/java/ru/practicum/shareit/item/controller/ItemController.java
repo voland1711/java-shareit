@@ -40,9 +40,9 @@ public class ItemController {
     }
 
     @PostMapping
-    public ItemDto createItem(@RequestHeader(SHARER_USER_ID) long userId, @Valid @RequestBody Item item) {
+    public ItemDto createItem(@RequestHeader(SHARER_USER_ID) long userId, @Valid @RequestBody ItemDto itemDto) {
         log.info("Работает: ItemController.createItem");
-        return itemService.createItem(userId, item);
+        return itemService.createItem(userId, itemDto);
     }
 
     @PatchMapping(ITEM_ID)
@@ -58,7 +58,7 @@ public class ItemController {
         return itemService.searchItems(userId, text);
     }
 
-    @PostMapping (ITEM_ID_COMMENT)
+    @PostMapping(ITEM_ID_COMMENT)
     public CommentDto createComment(@PathVariable Long itemId, @RequestHeader(SHARER_USER_ID) Long userId,
                                     @Valid @RequestBody CommentShortDto commentShortDto) {
         log.info("Работает: ItemController.createComment");

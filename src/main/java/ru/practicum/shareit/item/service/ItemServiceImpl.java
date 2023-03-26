@@ -5,6 +5,7 @@ import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang.StringUtils;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+import ru.practicum.shareit.booking.exception.BadRequestException;
 import ru.practicum.shareit.booking.model.Booking;
 import ru.practicum.shareit.booking.repository.BookingRepository;
 import ru.practicum.shareit.comment.dto.CommentDto;
@@ -26,6 +27,7 @@ import java.util.stream.Collectors;
 
 import static ru.practicum.shareit.booking.model.BookingMapper.toBookingDtoResponse;
 import static ru.practicum.shareit.booking.model.BookingStatus.APPROVED;
+import static ru.practicum.shareit.item.model.ItemMapper.toItem;
 import static ru.practicum.shareit.item.model.ItemMapper.toItemDto;
 
 @Slf4j
@@ -66,12 +68,13 @@ public class ItemServiceImpl implements ItemService {
 
     @Transactional
     @Override
-    public ItemDto createItem(long userId, Item item) {
-        log.info("Работает метод: createItem, поступили параметры: userId = {} и item = {}", userId, item);
-        validationItem(item);
+    public ItemDto createItem(long userId, ItemDto itemDto) {
+        log.info("Работает метод: createItem, поступили параметры: userId = {} и item = {}", userId, itemDto);
+        validationItem(itemDto);
         User tempUser = userRepository.findById(userId)
                 .orElseThrow(() -> new ObjectNotFoundException("Пользователь с id = " + userId + "не найден"));
-        log.info("Вещь - {}, создана, пользователем userId = {}", item.getName(), userId);
+        log.info("Вещь - {}, создана, пользователем userId = {}", itemDto.getName(), userId);
+        Item item = toItem(itemDto);
         item.setOwner(tempUser);
         log.info("Метод: createItem завершил работу");
         return toItemDto(itemRepository.save(item));
@@ -117,14 +120,14 @@ public class ItemServiceImpl implements ItemService {
                 .orElseThrow(() -> new ObjectNotFoundException("Пользователь с id: " + userId + " не найден"));
     }
 
-    private void validationItem(Item item) {
-        if (item.getAvailable() == null) {
-            throw new ItemNotFoundException("Отсутсвует параметр available");
+    private void validationItem(ItemDto itemDto) {
+        if (itemDto.getAvailable() == null) {
+            throw new BadRequestException("Отсутсвует параметр available");
         }
-        if (StringUtils.isEmpty(item.getName())) {
+        if (StringUtils.isEmpty(itemDto.getName())) {
             throw new ValidationException("Имя вещи пустое/содержит пробелы");
         }
-        if (StringUtils.isEmpty(item.getDescription())) {
+        if (StringUtils.isEmpty(itemDto.getDescription())) {
             throw new ValidationException("Описание вещи пустое/содержит пробелы");
         }
     }
