@@ -1,8 +1,13 @@
 package ru.practicum.shareit.item.model;
 
+import lombok.AccessLevel;
+import lombok.NoArgsConstructor;
 import lombok.NonNull;
 import ru.practicum.shareit.item.dto.ItemDto;
 
+import java.util.ArrayList;
+
+@NoArgsConstructor(access = AccessLevel.PRIVATE)
 public class ItemMapper {
     public static ItemDto toItemDto(@NonNull Item item) {
         return ItemDto
@@ -12,14 +17,14 @@ public class ItemMapper {
                 .description(item.getDescription())
                 .available(item.getAvailable())
                 .owner(item.getOwner())
+                .comments(new ArrayList<>())
                 .request(item.getRequest())
                 .build();
     }
 
-    public static Item toItem(ItemDto itemDto) {
+    public static Item toItem(@NonNull ItemDto itemDto) {
         return Item
                 .builder()
-                .id(itemDto.getId())
                 .name(itemDto.getName())
                 .description(itemDto.getDescription())
                 .available(itemDto.getAvailable())
@@ -27,4 +32,7 @@ public class ItemMapper {
                 .request(itemDto.getRequest())
                 .build();
     }
+
+
+
 }
