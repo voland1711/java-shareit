@@ -5,7 +5,6 @@ import lombok.NoArgsConstructor;
 import lombok.NonNull;
 import ru.practicum.shareit.item.dto.ItemDto;
 
-import java.util.ArrayList;
 
 @NoArgsConstructor(access = AccessLevel.PRIVATE)
 public class ItemMapper {
