@@ -16,9 +16,6 @@ public class ItemMapper {
                 .name(item.getName())
                 .description(item.getDescription())
                 .available(item.getAvailable())
-                .owner(item.getOwner())
-                .comments(new ArrayList<>())
-                .request(item.getRequest())
                 .build();
     }
 
@@ -32,7 +29,6 @@ public class ItemMapper {
                 .request(itemDto.getRequest())
                 .build();
     }
-
 
 
 }
