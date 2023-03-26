@@ -3,7 +3,6 @@ package ru.practicum.shareit.user.controller;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.web.bind.annotation.*;
-import ru.practicum.shareit.user.model.User;
 import ru.practicum.shareit.user.dto.UserDto;
 import ru.practicum.shareit.user.service.UserService;
 
@@ -20,7 +19,7 @@ import java.util.List;
 @RequiredArgsConstructor
 public class UserController {
     private final UserService userService;
-    private final String PATH_ID = "/{id}";
+    private final String pathId = "/{id}";
 
     @GetMapping
     public List<UserDto> getAllUsers() {
@@ -28,7 +27,7 @@ public class UserController {
         return userService.getAllUsers();
     }
 
-    @GetMapping(PATH_ID)
+    @GetMapping(pathId)
     public UserDto getUserById(@PathVariable long id) {
         log.info("Работает: UserController.getUserById");
         return userService.getUserById(id);
@@ -40,13 +39,13 @@ public class UserController {
         return userService.createUser(userDto);
     }
 
-    @PatchMapping(PATH_ID)
+    @PatchMapping(pathId)
     public UserDto updateUser(@RequestBody UserDto userDto, @PathVariable long id) {
         log.info("Работает: UserController.updateUser");
         return userService.updateUser(userDto, id);
     }
 
-    @DeleteMapping(PATH_ID)
+    @DeleteMapping(pathId)
     public void deleteUser(@PathVariable long id) {
         log.info("Работает: UserController.deleteUser");
         userService.deleteUser(id);

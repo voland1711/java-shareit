@@ -18,7 +18,7 @@ public class BookingMapper {
                 .build();
     }
 
-    public static BookingDtoResponse toBookingDtoResponse (@NonNull Booking booking) {
+    public static BookingDtoResponse toBookingDtoResponse(@NonNull Booking booking) {
         return BookingDtoResponse
                 .builder()
                 .id(booking.getId())
@@ -27,7 +27,7 @@ public class BookingMapper {
     }
 
 
-    public static Booking toBooking(@NonNull BookingDto bookingDto){
+    public static Booking toBooking(@NonNull BookingDto bookingDto) {
         return Booking
                 .builder()
                 .id(bookingDto.getId())
@@ -38,7 +38,7 @@ public class BookingMapper {
                 .build();
     }
 
-    public static Booking toBookingShort(@NonNull BookingShortDto bookingShortDto){
+    public static Booking toBookingShort(@NonNull BookingShortDto bookingShortDto) {
         return Booking
                 .builder()
                 .start(bookingShortDto.getStart())
