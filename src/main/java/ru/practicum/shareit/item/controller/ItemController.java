@@ -40,7 +40,8 @@ public class ItemController {
     @PostMapping
     public ItemDto createItem(@RequestHeader(SHARER_USER_ID) long userId, @Valid @RequestBody ItemDto itemDto) {
         log.info("Работает: ItemController.createItem");
-        return itemService.createItem(userId, itemDto);
+        ItemDto itemDto1 = itemService.createItem(userId, itemDto);
+        return itemDto1;
     }
 
     @PatchMapping("/{itemId}")
