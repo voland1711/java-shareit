@@ -38,7 +38,7 @@ public class BookingServiceImp implements BookingService {
     private final UserRepository userRepository;
     private final Sort sort = Sort.by(Sort.Direction.DESC, "start");
 
-    @Transactional
+  
     @Override
     public BookingDto createBooking(BookingShortDto bookingShortDto, Long userId) {
         log.info("Работает метод: createBooking");
@@ -67,7 +67,7 @@ public class BookingServiceImp implements BookingService {
         return toBookingDto(bookingRepository.save(booking));
     }
 
-    @Transactional
+    
     @Override
     public BookingDto approveBooking(Long userId, Long bookingId, Boolean approved) {
         log.info("Работает метод: approveBooking");
@@ -90,7 +90,7 @@ public class BookingServiceImp implements BookingService {
         return toBookingDto(booking);
     }
 
-    @Transactional
+   
     @Override
     public List<BookingDto> getAllByUser(Long userId, BookingState state) {
         log.info("Работает метод: getAllByUser");
@@ -135,7 +135,6 @@ public class BookingServiceImp implements BookingService {
                 .collect(Collectors.toList());
     }
 
-    @Transactional
     @Override
     public List<BookingDto> getAllByOwner(Long userId, BookingState state) {
         log.info("Работает метод: getAllByOwner");
@@ -179,7 +178,7 @@ public class BookingServiceImp implements BookingService {
                 .collect(Collectors.toList());
     }
 
-    @Transactional
+
     @Override
     public BookingDto getById(Long bookingId, Long userId) {
         log.info("Работает метод: getById");
