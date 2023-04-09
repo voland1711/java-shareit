@@ -4,7 +4,6 @@ import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
-import org.springframework.transaction.annotation.Transactional;
 import ru.practicum.shareit.booking.dto.BookingDto;
 import ru.practicum.shareit.booking.dto.BookingShortDto;
 import ru.practicum.shareit.booking.exception.BadRequestException;
@@ -38,7 +37,6 @@ public class BookingServiceImp implements BookingService {
     private final UserRepository userRepository;
     private final Sort sort = Sort.by(Sort.Direction.DESC, "start");
 
-  
     @Override
     public BookingDto createBooking(BookingShortDto bookingShortDto, Long userId) {
         log.info("Работает метод: createBooking");
@@ -66,7 +64,6 @@ public class BookingServiceImp implements BookingService {
         log.info("Завершил работу метод: createBooking");
         return toBookingDto(bookingRepository.save(booking));
     }
-
     
     @Override
     public BookingDto approveBooking(Long userId, Long bookingId, Boolean approved) {
@@ -89,7 +86,6 @@ public class BookingServiceImp implements BookingService {
         log.info("Завершил работу метод: approveBooking");
         return toBookingDto(booking);
     }
-
    
     @Override
     public List<BookingDto> getAllByUser(Long userId, BookingState state) {
@@ -177,7 +173,6 @@ public class BookingServiceImp implements BookingService {
                 .map(BookingMapper::toBookingDto)
                 .collect(Collectors.toList());
     }
-
 
     @Override
     public BookingDto getById(Long bookingId, Long userId) {
