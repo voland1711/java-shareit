@@ -78,7 +78,9 @@ public class ItemServiceImpl implements ItemService {
         item.setOwner(tempUser);
         log.info("Метод: createItem завершил работу");
         Item tempItem = itemRepository.save(item);
-        return toItemDto(tempItem);
+        ItemDto itemDto1 = toItemDto(tempItem);
+        System.out.println("itemDto1 = " + itemDto1);
+        return itemDto1;
     }
 
     @Transactional
