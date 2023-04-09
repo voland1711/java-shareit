@@ -77,10 +77,8 @@ public class ItemServiceImpl implements ItemService {
         Item item = toItem(itemDto);
         item.setOwner(tempUser);
         log.info("Метод: createItem завершил работу");
-        Item tempItem = itemRepository.save(item);
-        ItemDto itemDto1 = toItemDto(tempItem);
-        System.out.println("itemDto1 = " + itemDto1);
-        return itemDto1;
+        Item item1 = itemRepository.save(item);
+        throw new BadRequestException("Упс, ошибка в другом месте");
     }
 
     @Transactional
