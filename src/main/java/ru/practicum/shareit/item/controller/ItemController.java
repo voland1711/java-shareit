@@ -3,7 +3,6 @@ package ru.practicum.shareit.item.controller;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.web.bind.annotation.*;
-import ru.practicum.shareit.booking.exception.BadRequestException;
 import ru.practicum.shareit.comment.dto.CommentDto;
 import ru.practicum.shareit.comment.dto.CommentShortDto;
 import ru.practicum.shareit.comment.service.CommentService;
@@ -41,7 +40,7 @@ public class ItemController {
     @PostMapping
     public ItemDto createItem(@RequestHeader(SHARER_USER_ID) long userId, @Valid @RequestBody ItemDto itemDto) {
         log.info("Работает: ItemController.createItem");
-        throw new BadRequestException("Вещь уже забронирована");
+        return itemService.createItem(userId, itemDto);
     }
 
     @PatchMapping("/{itemId}")
