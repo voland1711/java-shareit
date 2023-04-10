@@ -1,7 +1,5 @@
 package ru.practicum.shareit.item.model;
 
-import lombok.AccessLevel;
-import lombok.NoArgsConstructor;
 import lombok.NonNull;
 import ru.practicum.shareit.item.dto.ItemDto;
 
