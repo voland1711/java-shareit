@@ -66,7 +66,6 @@ public class ItemServiceImpl implements ItemService {
         return itemDto;
     }
 
-    @Transactional
     @Override
     public ItemDto createItem(long userId, ItemDto itemDto) {
         log.info("Работает метод: createItem, поступили параметры: userId = {} и item = {}", userId, itemDto);
