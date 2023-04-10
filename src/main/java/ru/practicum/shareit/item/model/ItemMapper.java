@@ -5,8 +5,6 @@ import lombok.NoArgsConstructor;
 import lombok.NonNull;
 import ru.practicum.shareit.item.dto.ItemDto;
 
-
-@NoArgsConstructor(access = AccessLevel.PRIVATE)
 public class ItemMapper {
     public static ItemDto toItemDto(@NonNull Item item) {
         return ItemDto
