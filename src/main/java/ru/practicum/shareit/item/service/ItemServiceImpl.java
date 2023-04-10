@@ -66,6 +66,7 @@ public class ItemServiceImpl implements ItemService {
         return itemDto;
     }
 
+    @Transactional
     @Override
     public ItemDto createItem(long userId, ItemDto itemDto) {
         log.info("Работает метод: createItem, поступили параметры: userId = {} и item = {}", userId, itemDto);
@@ -76,7 +77,7 @@ public class ItemServiceImpl implements ItemService {
         Item item = toItem(itemDto);
         item.setOwner(tempUser);
         log.info("Метод: createItem завершил работу");
-        return toItemDto(item);
+        return toItemDto(itemRepository.save(item));
     }
 
     @Transactional
