@@ -40,7 +40,7 @@ public class CommentServiceImp implements CommentService {
 
         bookingRepository.findAll().stream()
                 .filter(booking -> Objects.equals(booking.getItem().getId(), itemId))
-                .filter(booking -> booking.getStatus().equals(APPROVED))
+                .filter(booking -> booking.getStatus() == APPROVED)
                 .filter(booking -> booking.getEnd().isBefore(LocalDateTime.now()))
                 .filter(booking -> Objects.equals(booking.getBooker().getId(), userId))
                 .findFirst()

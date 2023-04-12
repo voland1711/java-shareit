@@ -17,6 +17,7 @@ import javax.validation.constraints.NotBlank;
 @Table(name = "users")
 @NoArgsConstructor
 @AllArgsConstructor
+@ToString
 public class User {
 
     @Id
@@ -31,12 +32,4 @@ public class User {
     @Column(unique = true, length = 50, nullable = false)
     private String email;
 
-    @Override
-    public String toString() {
-        return "User{" +
-                "id=" + id +
-                ", name='" + name + '\'' +
-                ", email='" + email + '\'' +
-                '}';
-    }
 }

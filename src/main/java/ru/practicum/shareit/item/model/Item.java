@@ -18,6 +18,7 @@ import javax.validation.constraints.NotNull;
 @Table(name = "items")
 @NoArgsConstructor
 @AllArgsConstructor
+@ToString
 public class Item {
 
     @Id
@@ -44,13 +45,4 @@ public class Item {
     @JoinColumn(name = "request_id", referencedColumnName = "id")
     private ItemRequest request;
 
-    @Override
-    public String toString() {
-        return "Item{" +
-                "id=" + id +
-                ", name='" + name + '\'' +
-                ", description='" + description + '\'' +
-                ", available=" + available +
-                '}';
-    }
 }

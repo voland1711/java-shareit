@@ -90,87 +90,74 @@ public class BookingServiceImp implements BookingService {
         return toBookingDto(booking);
     }
 
-    @Transactional
+    @Transactional(readOnly = true)
     @Override
     public List<BookingDto> getAllByUser(Long userId, BookingState state) {
         log.info("Работает метод: getAllByUser");
         User user = userRepository.findById(userId)
                 .orElseThrow(() -> new ObjectNotFoundException("Пользователь с id: " + userId + " не найден"));
         List<Booking> bookingsList = new ArrayList<>();
+        log.info("state: {}", state);
         switch (state) {
             case ALL:
-                log.info("state: ALL");
                 bookingsList.addAll(bookingRepository.findAllByBooker(user, sort));
                 break;
             case CURRENT:
-                log.info("state: CURRENT");
                 bookingsList.addAll(bookingRepository.findAllByBookerAndStartBeforeAndEndAfter(user,
                         LocalDateTime.now(), LocalDateTime.now(), sort));
                 break;
             case PAST:
-                log.info("state: PAST");
                 bookingsList.addAll(bookingRepository.findAllByBookerAndEndBefore(user,
                         LocalDateTime.now(), sort));
                 break;
             case FUTURE:
-                log.info("state: FUTURE");
                 bookingsList.addAll(bookingRepository.findAllByBookerAndStartAfter(user, LocalDateTime.now(), sort));
                 break;
             case WAITING:
-                log.info("state: WAITING");
                 bookingsList.addAll(bookingRepository.findAllByBookerAndStatusEquals(user, WAITING, sort));
                 break;
             case REJECTED:
-                log.info("state: REJECTED");
                 bookingsList.addAll(bookingRepository.findAllByBookerAndStatusEquals(user, REJECTED, sort));
                 break;
             default:
-                log.info("state: default");
                 throw new BadRequestException("Unknown state: UNSUPPORTED_STATUS");
         }
-
         log.info("Завершил работу метод: getAllByUser");
         return bookingsList.stream()
                 .map(BookingMapper::toBookingDto)
                 .collect(Collectors.toList());
     }
 
-    @Transactional
+    @Transactional(readOnly = true)
     @Override
     public List<BookingDto> getAllByOwner(Long userId, BookingState state) {
         log.info("Работает метод: getAllByOwner");
         User user = userRepository.findById(userId)
                 .orElseThrow(() -> new ObjectNotFoundException("Пользователь с id: " + userId + " не найден"));
         List<Booking> bookingsList = new ArrayList<>();
+        log.info("state: {}", state);
         switch (state) {
             case ALL:
-                log.info("state: ALL");
                 bookingsList.addAll(bookingRepository.findAllByItemOwner(user, sort));
                 break;
             case CURRENT:
-                log.info("state: CURRENT");
                 bookingsList.addAll(bookingRepository.findAllByItemOwnerAndStartBeforeAndEndAfter(user,
                         LocalDateTime.now(), LocalDateTime.now(), sort));
                 break;
             case PAST:
-                log.info("state: PAST");
                 bookingsList.addAll(bookingRepository.findAllByItemOwnerAndEndBefore(user,
                         LocalDateTime.now(), sort));
                 break;
             case FUTURE:
-                log.info("state: FUTURE");
                 bookingsList.addAll(bookingRepository.findAllByItemOwnerAndStartAfter(user, LocalDateTime.now(), sort));
                 break;
             case WAITING:
-                log.info("state: WAITING");
                 bookingsList.addAll(bookingRepository.findAllByItemOwnerAndStatusEquals(user, WAITING, sort));
                 break;
             case REJECTED:
-                log.info("state: REJECTED");
                 bookingsList.addAll(bookingRepository.findAllByItemOwnerAndStatusEquals(user, REJECTED, sort));
                 break;
             default:
-                log.info("state: default");
                 throw new BadRequestException("Unknown state: UNSUPPORTED_STATUS");
         }
         log.info("Завершил работу метод: getAllByOwner");
@@ -179,7 +166,7 @@ public class BookingServiceImp implements BookingService {
                 .collect(Collectors.toList());
     }
 
-    @Transactional
+    @Transactional(readOnly = true)
     @Override
     public BookingDto getById(Long bookingId, Long userId) {
         log.info("Работает метод: getById");

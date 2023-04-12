@@ -2,6 +2,7 @@ package ru.practicum.shareit.user.service;
 
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.apache.commons.lang.StringUtils;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import ru.practicum.shareit.user.exception.ObjectNotFoundException;
@@ -56,10 +57,10 @@ public class UserServiceImpl implements UserService {
         User tempUser = userRepository.findById(userId)
                 .orElseThrow(() -> new ObjectNotFoundException("Пользователь с id = " + userId + " найден"));
         tempUser.setId(userId);
-        if (userDto.getEmail() != null && !userDto.getEmail().isBlank()) {
+        if (!StringUtils.isBlank(userDto.getEmail())) {
             tempUser.setEmail(userDto.getEmail());
         }
-        if (userDto.getName() != null && !userDto.getName().isBlank()) {
+        if (!StringUtils.isBlank(userDto.getName())) {
             tempUser.setName(userDto.getName());
         }
         return toUserDto(tempUser);
