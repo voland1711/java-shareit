@@ -16,7 +16,7 @@ public class ItemDtoTestJson {
     private JacksonTester<UserDto> userDtoJacksonTester;
 
     @Test
-    void serializeUserDtoTest () throws Exception {
+    void serializeUserDtoTest() throws Exception {
         UserDto userDto = new UserDto().toBuilder()
                 .id(1L)
                 .name("User")

@@ -151,7 +151,7 @@ class BookingShortDtoTest {
     @Test
     @SneakyThrows
     @DisplayName("Дата окончания в прошлом")
-    void BookingShortDtoEndDateInPastTest() {
+    void bookingShortDtoEndDateInPastTest() {
         String jsonBookingShortDto = jsonBookingShort.put("end", end.minusDays(2)).toString();
         BookingShortDto bookingShortDto = objectMapper.readValue(jsonBookingShortDto, BookingShortDto.class);
         Set<ConstraintViolation<BookingShortDto>> violations = validator.validate(bookingShortDto);
@@ -167,7 +167,7 @@ class BookingShortDtoTest {
     @Test
     @SneakyThrows
     @DisplayName("itemId имеет значение null")
-    void BookingShortDtoItemIdIsNullTest() {
+    void bookingShortDtoItemIdIsNullTest() {
         String jsonBookingShortDto = jsonBookingShort.put("itemId", null).toString();
 
         BookingShortDto bookingShortDto = objectMapper.readValue(jsonBookingShortDto, BookingShortDto.class);
@@ -184,7 +184,7 @@ class BookingShortDtoTest {
     @Test
     @SneakyThrows
     @DisplayName("Дата начала в прошлом")
-    void BookingShortDtoStartDateInPastTest() {
+    void bookingShortDtoStartDateInPastTest() {
         String jsonBookingShortDto = jsonBookingShort.put("end", end.minusDays(2)).toString();
 
         BookingShortDto bookingShortDto = objectMapper.readValue(jsonBookingShortDto, BookingShortDto.class);

@@ -165,7 +165,7 @@ public class ItemServiceTest {
     public void getItemByIdTest() {
         userRepository.save(toUser(userDto1));
         itemService.createItem(1L, itemDto1);
-        ItemDto itemDto = itemService.getItemById(1L, 1l);
+        ItemDto itemDto = itemService.getItemById(1L, 1L);
         itemDto1.setComments(new ArrayList<>());
         assertEquals(itemDto1, itemDto);
     }
@@ -175,7 +175,7 @@ public class ItemServiceTest {
     public void getItemByIdNotFoundTest() {
         userRepository.save(toUser(userDto1));
         assertThatExceptionOfType(ItemNotFoundException.class)
-                .isThrownBy(() -> itemService.getItemById(1L, 1l))
+                .isThrownBy(() -> itemService.getItemById(1L, 1L))
                 .withMessage("Вещь id = 1 в коллекции не найдена");
     }
 

@@ -86,7 +86,7 @@ public class UserDtoTestJson {
         String errorMessage = "не должно быть пустым";
         violation.stream()
                 .map(ConstraintViolation::getMessage)
-                .forEach(message ->assertEquals(errorMessage, message));
+                .forEach(message -> assertEquals(errorMessage, message));
     }
 
     @SneakyThrows
@@ -103,9 +103,8 @@ public class UserDtoTestJson {
         String errorMessage = "должно иметь формат адреса электронной почты";
         violation.stream()
                 .map(ConstraintViolation::getMessage)
-                .forEach(message ->assertEquals(errorMessage, message));
+                .forEach(message -> assertEquals(errorMessage, message));
     }
-
 
 
 }
