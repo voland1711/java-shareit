@@ -116,8 +116,6 @@ class ItemControllerTest {
                 .build();
         when(itemService.getAllItems(1L))
                 .thenReturn(List.of(itemDto));
-
-
         List<ItemDto> itemDto1 = itemService.getAllItems(1L);
         System.out.println("itemDto1 = " + itemDto1);
         mockMvc.perform(get("/items")
@@ -129,4 +127,13 @@ class ItemControllerTest {
                 .andExpect(jsonPath("$[0].name", is("name")))
                 .andExpect(jsonPath("$[0].description", is("description")));
     }
+
+    @SneakyThrows
+    @Test
+    public void getItemByIdTest() {
+
+    }
+
+
+
 }

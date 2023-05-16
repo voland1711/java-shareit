@@ -68,7 +68,6 @@ public class UserDtoTestJson {
         assertThat(userDtoJsonContent).extractingJsonPathStringValue("$.email").isEqualTo(userDto.getEmail());
 
         UserDto userDtoForTest = userDtoJacksonTester.parseObject(userDtoJsonContent.getJson());
-
         assertThat(userDtoForTest).isEqualTo(userDto);
     }
 
