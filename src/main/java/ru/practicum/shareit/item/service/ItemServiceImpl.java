@@ -11,11 +11,12 @@ import ru.practicum.shareit.booking.repository.BookingRepository;
 import ru.practicum.shareit.comment.dto.CommentDto;
 import ru.practicum.shareit.comment.model.CommentMapper;
 import ru.practicum.shareit.comment.repository.CommentRepository;
-import ru.practicum.shareit.item.dto.ItemDto;
+import ru.practicum.shareit.item.ItemDto;
 import ru.practicum.shareit.item.exception.ItemNotFoundException;
 import ru.practicum.shareit.item.model.Item;
 import ru.practicum.shareit.item.model.ItemMapper;
 import ru.practicum.shareit.item.repository.ItemRepository;
+import ru.practicum.shareit.request.repository.ItemRequestRepository;
 import ru.practicum.shareit.user.exception.ObjectNotFoundException;
 import ru.practicum.shareit.user.exception.ValidationException;
 import ru.practicum.shareit.user.model.User;
@@ -38,6 +39,7 @@ public class ItemServiceImpl implements ItemService {
     private final ItemRepository itemRepository;
     private final UserRepository userRepository;
     private final CommentRepository commentRepository;
+    private final ItemRequestRepository itemRequestRepository;
 
     @Transactional(readOnly = true)
     @Override
@@ -56,7 +58,7 @@ public class ItemServiceImpl implements ItemService {
         log.info("Работает метод: getItemById, поступили параметры: userId = {} и itemId = {}", userId, itemId);
         existUser(userId);
         Item item = itemRepository.findById(itemId)
-                .orElseThrow(() -> new ItemNotFoundException("Вещь id= " + itemId + " в коллекции не найдена"));
+                .orElseThrow(() -> new ItemNotFoundException("Вещь id = " + itemId + " в коллекции не найдена"));
         List<CommentDto> commentDtoList = commentRepository.findByItem(item).stream()
                 .map(CommentMapper::toCommentDto)
                 .collect(Collectors.toList());
@@ -72,10 +74,17 @@ public class ItemServiceImpl implements ItemService {
         log.info("Работает метод: createItem, поступили параметры: userId = {} и item = {}", userId, itemDto);
         validationItem(itemDto);
         User tempUser = userRepository.findById(userId)
-                .orElseThrow(() -> new ObjectNotFoundException("Пользователь с id = " + userId + "не найден"));
+                .orElseThrow(() -> new ObjectNotFoundException("Пользователь с id = " + userId + "  не найден"));
         log.info("Вещь - {}, создана, пользователем userId = {}", itemDto.getName(), userId);
         Item item = toItem(itemDto);
         item.setOwner(tempUser);
+
+        Long requestId = itemDto.getRequestId();
+        if (requestId != null) {
+            item.setRequest(itemRequestRepository.findById(requestId)
+                    .orElseThrow(() -> new ObjectNotFoundException("Запрос с id = " + requestId + " не найден")));
+        }
+
         itemRepository.save(item);
         log.info("Метод: createItem завершил работу");
         return toItemDto(item);
@@ -83,8 +92,8 @@ public class ItemServiceImpl implements ItemService {
 
     @Transactional
     @Override
-    public ItemDto updateItem(long userId, Item item, long itemId) {
-        log.info("Метод: updateItem, поступили параметры: userId = {}, item= {} и itemId = {}", userId, item, itemId);
+    public ItemDto updateItem(long userId, ItemDto itemDto, long itemId) {
+        log.info("Метод: updateItem, поступили параметры: userId = {}, item= {} и itemId = {}", userId, itemDto, itemId);
         existUser(userId);
         Item oldItem = itemRepository.findById(itemId)
                 .orElseThrow(() -> new ObjectNotFoundException("Вещь с id = " + itemId + " не найдена"));
@@ -92,11 +101,12 @@ public class ItemServiceImpl implements ItemService {
             throw new ObjectNotFoundException("Обновить данные вещи может только ее владелец");
         }
         oldItem.setId(itemId);
-        Optional.ofNullable(item.getName()).ifPresent(oldItem::setName);
-        Optional.ofNullable(item.getDescription()).ifPresent(oldItem::setDescription);
-        Optional.ofNullable(item.getAvailable()).ifPresent(oldItem::setAvailable);
-        Optional.ofNullable(item.getOwner()).ifPresent(oldItem::setOwner);
-        Optional.ofNullable(item.getRequest()).ifPresent(oldItem::setRequest);
+        Optional.ofNullable(itemDto.getName()).ifPresent(oldItem::setName);
+        Optional.ofNullable(itemDto.getDescription()).ifPresent(oldItem::setDescription);
+        Optional.ofNullable(itemDto.getAvailable()).ifPresent(oldItem::setAvailable);
+        Optional.ofNullable(itemDto.getOwner()).ifPresent(oldItem::setOwner);
+        Optional.ofNullable(itemDto.getRequestId())
+                .ifPresent(requestId -> oldItem.setRequest(itemRequestRepository.findById(requestId).get()));
         log.info("Вещь id = {} обновлена", itemId);
         log.info("Метод: updateItem завершил работу");
         return toItemDto(oldItem);

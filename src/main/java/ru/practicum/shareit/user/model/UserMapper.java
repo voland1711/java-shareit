@@ -1,9 +1,10 @@
 package ru.practicum.shareit.user.model;
 
+import lombok.NonNull;
 import ru.practicum.shareit.user.dto.UserDto;
 
 public class UserMapper {
-    public static UserDto toUserDto(User user) {
+    public static UserDto toUserDto(@NonNull User user) {
         return UserDto
                 .builder()
                 .id(user.getId())
@@ -12,9 +13,10 @@ public class UserMapper {
                 .build();
     }
 
-    public static User toUser(UserDto userDto) {
+    public static User toUser(@NonNull UserDto userDto) {
         return User
                 .builder()
+                .id(userDto.getId())
                 .name(userDto.getName())
                 .email(userDto.getEmail())
                 .build();

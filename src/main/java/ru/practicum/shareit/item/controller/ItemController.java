@@ -6,8 +6,7 @@ import org.springframework.web.bind.annotation.*;
 import ru.practicum.shareit.comment.dto.CommentDto;
 import ru.practicum.shareit.comment.dto.CommentShortDto;
 import ru.practicum.shareit.comment.service.CommentService;
-import ru.practicum.shareit.item.dto.ItemDto;
-import ru.practicum.shareit.item.model.Item;
+import ru.practicum.shareit.item.ItemDto;
 import ru.practicum.shareit.item.service.ItemService;
 
 import javax.validation.Valid;
@@ -44,10 +43,10 @@ public class ItemController {
     }
 
     @PatchMapping("/{itemId}")
-    public ItemDto updateItem(@RequestHeader(SHARER_USER_ID) long userId, @RequestBody Item item,
+    public ItemDto updateItem(@RequestHeader(SHARER_USER_ID) long userId, @RequestBody ItemDto itemDto,
                               @PathVariable long itemId) {
         log.info("Работает: ItemController.updateItem");
-        return itemService.updateItem(userId, item, itemId);
+        return itemService.updateItem(userId, itemDto, itemId);
     }
 
     @GetMapping("/search")

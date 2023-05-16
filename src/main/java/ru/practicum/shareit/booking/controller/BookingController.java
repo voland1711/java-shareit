@@ -2,6 +2,7 @@ package ru.practicum.shareit.booking.controller;
 
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 import ru.practicum.shareit.booking.dto.BookingDto;
 import ru.practicum.shareit.booking.dto.BookingShortDto;
@@ -9,12 +10,15 @@ import ru.practicum.shareit.booking.model.BookingState;
 import ru.practicum.shareit.booking.service.BookingService;
 
 import javax.validation.Valid;
+import javax.validation.constraints.Positive;
+import javax.validation.constraints.PositiveOrZero;
 import java.util.List;
 
 @Slf4j
 @RestController
 @RequestMapping(path = "/bookings")
 @RequiredArgsConstructor
+@Validated
 public class BookingController {
     private final BookingService bookingService;
     private static final String SHARER_USER_ID = "X-Sharer-User-Id";
@@ -22,16 +26,20 @@ public class BookingController {
 
     @GetMapping
     public List<BookingDto> getAllByUser(@RequestHeader(SHARER_USER_ID) Long userId,
-                                         @RequestParam(defaultValue = "ALL") BookingState state) {
+                                         @RequestParam(defaultValue = "ALL") BookingState state,
+                                         @PositiveOrZero @RequestParam(defaultValue = "0") Integer from,
+                                         @Positive @RequestParam(defaultValue = "10") Integer size) {
         log.info("Работает: BookingController.getAllByUser");
-        return bookingService.getAllByUser(userId, state);
+        return bookingService.getAllByUser(userId, state, from, size);
     }
 
     @GetMapping("/owner")
     public List<BookingDto> getAllByOwner(@RequestHeader(SHARER_USER_ID) Long userId,
-                                          @RequestParam(defaultValue = "ALL") BookingState state) {
+                                          @RequestParam(defaultValue = "ALL") BookingState state,
+                                          @PositiveOrZero @RequestParam(defaultValue = "0") Integer from,
+                                          @Positive @RequestParam(defaultValue = "10") Integer size) {
         log.info("Работает: BookingController.getAllByOwner");
-        return bookingService.getAllByOwner(userId, state);
+        return bookingService.getAllByOwner(userId, state, from, size);
     }
 
     @GetMapping(PATH_ID)

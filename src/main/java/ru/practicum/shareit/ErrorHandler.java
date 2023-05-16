@@ -9,19 +9,13 @@ import org.springframework.web.bind.annotation.RestControllerAdvice;
 import ru.practicum.shareit.booking.exception.BadRequestException;
 import ru.practicum.shareit.item.exception.ItemNotFoundException;
 import ru.practicum.shareit.user.exception.ObjectNotFoundException;
-import ru.practicum.shareit.user.exception.ValidationException;
 
+import javax.validation.ConstraintViolationException;
 import java.util.Map;
 
 @Slf4j
 @RestControllerAdvice
 public class ErrorHandler {
-    @ExceptionHandler
-    @ResponseStatus(HttpStatus.CONFLICT)
-    public Map<String, String> validationException(final ValidationException e) {
-        log.error(String.valueOf(e));
-        return Map.of("error", e.getMessage());
-    }
 
     @ExceptionHandler
     @ResponseStatus(HttpStatus.NOT_FOUND)
@@ -44,12 +38,18 @@ public class ErrorHandler {
         return Map.of("error", e.getMessage());
     }
 
-
     @ExceptionHandler
     @ResponseStatus(HttpStatus.BAD_REQUEST)
     public Map<String, String> methodArgumentNotValidException(final MethodArgumentNotValidException e) {
         log.error("error {}", e.getMessage());
         return Map.of("error", e.getFieldError().getField() + " " + e.getFieldError().getDefaultMessage());
+    }
+
+    @ExceptionHandler
+    @ResponseStatus(HttpStatus.BAD_REQUEST)
+    public Map<String, String> handleConstraintViolationException(final ConstraintViolationException e) {
+        log.error(String.valueOf(e));
+        return Map.of("error", e.getMessage());
     }
 
 }
