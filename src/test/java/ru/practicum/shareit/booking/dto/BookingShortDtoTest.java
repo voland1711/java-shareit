@@ -175,7 +175,7 @@ class BookingShortDtoTest {
 
         assertEquals(1, violations.size());
 
-        String errorMessage = "не должно равняться null";
+        String errorMessage = "must not be null";
         violations.stream()
                 .map(ConstraintViolation::getMessage)
                 .forEach(message -> assertEquals(errorMessage, message));
