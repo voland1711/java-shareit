@@ -158,7 +158,7 @@ class BookingShortDtoTest {
 
         assertEquals(1, violations.size());
 
-        String errorMessage = "должно содержать дату, которая еще не наступила";
+        String errorMessage = "must be a future date";
         violations.stream()
                 .map(ConstraintViolation::getMessage)
                 .forEach(message -> assertEquals(errorMessage, message));
@@ -192,7 +192,7 @@ class BookingShortDtoTest {
 
         assertEquals(1, violations.size());
 
-        String errorMessage = "должно содержать дату, которая еще не наступила";
+        String errorMessage = "must be a future date";
         violations.stream()
                 .map(ConstraintViolation::getMessage)
                 .forEach(message -> assertEquals(errorMessage, message));
