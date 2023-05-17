@@ -50,10 +50,10 @@ public class BookingServiceImp implements BookingService {
         if (!item.getAvailable()) {
             throw new BadRequestException("Вещь уже забронирована");
         }
-        Lo
         if (item.getOwner().getId().equals(userId)) {
             throw new ObjectNotFoundException("Владелец не может забронировать вещь");
         }
+
         LocalDateTime startlocalDateTime = bookingShortDto.getStart();
         LocalDateTime endlocalDateTime = bookingShortDto.getEnd();
         if (endlocalDateTime.isBefore(startlocalDateTime) || endlocalDateTime.equals(startlocalDateTime)) {
