@@ -79,7 +79,7 @@ public class UserServiceTest {
         userDto1.setName("");
         assertThatThrownBy(() -> userService.createUser(userDto1))
                 .isInstanceOf(ConstraintViolationException.class)
-                .hasMessageContaining("не должно быть пустым")
+                .hasMessageContaining("must not be blank")
                 .extracting(e -> ((ConstraintViolationException) e).getConstraintViolations())
                 .satisfies(violations -> {
                     assertThat(violations.size()).isEqualTo(1);
