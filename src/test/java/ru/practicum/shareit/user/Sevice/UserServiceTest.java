@@ -93,7 +93,7 @@ public class UserServiceTest {
         userDto1.setEmail("name");
         assertThatThrownBy(() -> userService.createUser(userDto1))
                 .isInstanceOf(ConstraintViolationException.class)
-                .hasMessageContaining("должно иметь формат адреса электронной почты")
+                .hasMessageContaining("must be a well-formed email address")
                 .extracting(e -> ((ConstraintViolationException) e).getConstraintViolations())
                 .satisfies(violations -> {
                     assertThat(violations.size()).isEqualTo(1);
