@@ -95,7 +95,7 @@ public class ItemRequestServiceTest {
                     String propertyPath = violation.getPropertyPath().toString();
                     String interpolatedMessage = violation.getMessage();
                     assertEquals("description", propertyPath);
-                    assertEquals("не должно быть пустым", interpolatedMessage);
+                    assertEquals("must not be blank", interpolatedMessage);
                 });
     }
 
