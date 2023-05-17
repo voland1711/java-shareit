@@ -50,7 +50,7 @@ public class BookingServiceImp implements BookingService {
         if (!item.getAvailable()) {
             throw new BadRequestException("Вещь уже забронирована");
         }
-        if (item.getOwner().getId() == userId) {
+        if (item.getOwner().getId().equals(userId)) {
             throw new ObjectNotFoundException("Владелец не может забронировать вещь");
         }
 
