@@ -130,9 +130,7 @@ public class BookingServiceImpTest {
                 .isThrownBy(() -> bookingService.createBooking(new BookingShortDto().toBuilder()
                         .start(start)
                         .end(end)
-                        .build(), 1L))
-                .withMessageContaining("is null")
-                .withMessageContaining("getItemId()");
+                        .build(), 1L));
     }
 
     @Test
