@@ -99,7 +99,6 @@ public class BookingServiceImpTest {
         userRepository.save(user2);
         itemRepository.save(item1);
         BookingDto result = bookingService.createBooking(bookingShortDto, 1L);
-        // Проверка результата
         assertNotNull(result);
         assertNotNull(result.getId());
         assertEquals(user1.getId(), result.getBooker().getId());
@@ -132,7 +131,8 @@ public class BookingServiceImpTest {
                         .start(start)
                         .end(end)
                         .build(), 1L))
-                .withMessageContaining("value of \"ru.practicum.shareit.booking.dto.BookingShortDto.getItemId()\" is null");
+                .withMessageContaining("is null")
+                .withMessageContaining("getItemId()");
     }
 
     @Test
@@ -435,6 +435,4 @@ public class BookingServiceImpTest {
                 .withMessage("Unknown state: UNSUPPORTED_STATUS");
     }
 
-
 }
-
