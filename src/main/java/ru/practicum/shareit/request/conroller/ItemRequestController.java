@@ -7,7 +7,6 @@ import org.springframework.web.bind.annotation.*;
 import ru.practicum.shareit.request.ItemRequestService;
 import ru.practicum.shareit.request.dto.ItemRequestDto;
 import ru.practicum.shareit.request.dto.ItemRequestResponseDto;
-import ru.practicum.shareit.user.service.UserService;
 
 import javax.validation.Valid;
 import javax.validation.constraints.Positive;
@@ -23,13 +22,12 @@ import java.util.List;
 @RequiredArgsConstructor
 @Validated
 public class ItemRequestController {
-    private final UserService userService;
     private final ItemRequestService itemRequestService;
     private static final String SHARER_USER_ID = "X-Sharer-User-Id";
 
     @PostMapping
     public ItemRequestResponseDto createItemRequest(@RequestHeader(SHARER_USER_ID) Long userId,
-                                                @Valid @RequestBody ItemRequestDto itemRequestDto) {
+                                                    @Valid @RequestBody ItemRequestDto itemRequestDto) {
         log.info("Работает: ItemRequestController.createItemRequest");
         return itemRequestService.createItemRequest(userId, itemRequestDto);
     }
@@ -50,8 +48,8 @@ public class ItemRequestController {
 
     @GetMapping
     public List<ItemRequestResponseDto> getAllByRequester(@RequestHeader(SHARER_USER_ID) Long userId,
-                                                  @PositiveOrZero @RequestParam(defaultValue = "0") Integer from,
-                                                  @Positive @RequestParam(defaultValue = "10") Integer size) {
+                                                          @PositiveOrZero @RequestParam(defaultValue = "0") Integer from,
+                                                          @Positive @RequestParam(defaultValue = "10") Integer size) {
         log.info("Работает: ItemRequestController.getAllByRequester");
         return itemRequestService.getAllByRequester(userId, from, size);
     }

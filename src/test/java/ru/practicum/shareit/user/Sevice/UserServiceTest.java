@@ -79,7 +79,8 @@ public class UserServiceTest {
         userDto1.setName("");
         assertThatThrownBy(() -> userService.createUser(userDto1))
                 .isInstanceOf(ConstraintViolationException.class)
-                .hasMessageContaining("must not be blank")
+                .hasMessageContaining("name")
+                .hasMessageContaining("javax.validation.constraints.NotBlank.message")
                 .extracting(e -> ((ConstraintViolationException) e).getConstraintViolations())
                 .satisfies(violations -> {
                     assertThat(violations.size()).isEqualTo(1);
@@ -93,7 +94,7 @@ public class UserServiceTest {
         userDto1.setEmail("name");
         assertThatThrownBy(() -> userService.createUser(userDto1))
                 .isInstanceOf(ConstraintViolationException.class)
-                .hasMessageContaining("must be a well-formed email address")
+                .hasMessageContaining("javax.validation.constraints.Email.message")
                 .extracting(e -> ((ConstraintViolationException) e).getConstraintViolations())
                 .satisfies(violations -> {
                     assertThat(violations.size()).isEqualTo(1);

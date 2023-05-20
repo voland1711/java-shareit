@@ -157,11 +157,11 @@ class BookingShortDtoTest {
         Set<ConstraintViolation<BookingShortDto>> violations = validator.validate(bookingShortDto);
 
         assertEquals(1, violations.size());
-
-        String errorMessage = "must be a future date";
         violations.stream()
-                .map(ConstraintViolation::getMessage)
-                .forEach(message -> assertEquals(errorMessage, message));
+                .forEach(violation -> {
+                    assertEquals("end", violation.getPropertyPath().toString());
+                    assertEquals("{javax.validation.constraints.Future.message}", violation.getMessageTemplate());
+                });
     }
 
     @Test
@@ -172,13 +172,13 @@ class BookingShortDtoTest {
 
         BookingShortDto bookingShortDto = objectMapper.readValue(jsonBookingShortDto, BookingShortDto.class);
         Set<ConstraintViolation<BookingShortDto>> violations = validator.validate(bookingShortDto);
-
         assertEquals(1, violations.size());
 
-        String errorMessage = "must not be null";
         violations.stream()
-                .map(ConstraintViolation::getMessage)
-                .forEach(message -> assertEquals(errorMessage, message));
+                .forEach(violation -> {
+                    assertEquals("itemId", violation.getPropertyPath().toString());
+                    assertEquals("{javax.validation.constraints.NotNull.message}", violation.getMessageTemplate());
+                });
     }
 
     @Test
@@ -186,16 +186,14 @@ class BookingShortDtoTest {
     @DisplayName("Дата начала в прошлом")
     void bookingShortDtoStartDateInPastTest() {
         String jsonBookingShortDto = jsonBookingShort.put("end", end.minusDays(2)).toString();
-
         BookingShortDto bookingShortDto = objectMapper.readValue(jsonBookingShortDto, BookingShortDto.class);
         Set<ConstraintViolation<BookingShortDto>> violations = validator.validate(bookingShortDto);
-
         assertEquals(1, violations.size());
-
-        String errorMessage = "must be a future date";
         violations.stream()
-                .map(ConstraintViolation::getMessage)
-                .forEach(message -> assertEquals(errorMessage, message));
+                .forEach(violation -> {
+                    assertEquals("end", violation.getPropertyPath().toString());
+                    assertEquals("{javax.validation.constraints.Future.message}", violation.getMessageTemplate());
+                });
     }
 
 }

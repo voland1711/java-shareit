@@ -21,7 +21,6 @@ import ru.practicum.shareit.user.dto.UserDto;
 import ru.practicum.shareit.user.exception.ObjectNotFoundException;
 import ru.practicum.shareit.user.repository.UserRepository;
 
-import javax.validation.ConstraintViolation;
 import javax.validation.ConstraintViolationException;
 
 import static org.assertj.core.api.Assertions.assertThat;
@@ -63,7 +62,6 @@ public class ItemRequestServiceTest {
                 .build();
     }
 
-
     @Test
     @DisplayName("Создаем ItemRequest, user not found")
     public void createItemRequestUserNotFoundTest() {
@@ -90,13 +88,8 @@ public class ItemRequestServiceTest {
         itemRequest.setRequester(userRepository.save(toUser(userDto1)));
         assertThatExceptionOfType(ConstraintViolationException.class)
                 .isThrownBy(() -> itemRequestRepository.save(itemRequest))
-                .satisfies(exception -> {
-                    ConstraintViolation<?> violation = exception.getConstraintViolations().iterator().next();
-                    String propertyPath = violation.getPropertyPath().toString();
-                    String interpolatedMessage = violation.getMessage();
-                    assertEquals("description", propertyPath);
-                    assertEquals("must not be blank", interpolatedMessage);
-                });
+                .withMessageContaining("description")
+                .withMessageContaining("javax.validation.constraints.NotBlank.message");
     }
 
     @Test

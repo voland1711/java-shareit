@@ -63,7 +63,6 @@ class UserControllerTest {
     @SneakyThrows
     @Test
     public void getAllUsersEmptyTest() {
-        System.out.println("userDto1 = " + userDto1);
         Mockito
                 .when(userService.getAllUsers()).thenReturn(new ArrayList<>());
 
@@ -78,7 +77,6 @@ class UserControllerTest {
     @SneakyThrows
     @Test
     public void getAllUsersTest() {
-        System.out.println("userDto1 = " + userDto1);
         Mockito
                 .when(userService.getAllUsers()).thenReturn(List.of(userDto1));
 
