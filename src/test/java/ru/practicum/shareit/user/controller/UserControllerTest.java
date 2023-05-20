@@ -38,7 +38,7 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 @WebMvcTest(UserController.class)
 class UserControllerTest {
     @Autowired
-    ObjectMapper objectMapper;
+    private ObjectMapper objectMapper;
     @Autowired
     private MockMvc mockMvc;
     @MockBean
@@ -47,18 +47,23 @@ class UserControllerTest {
     private final DateTimeFormatter dateTimeFormatter = DateTimeFormatter.ofPattern("yyyy-MM-dd'T'HH:mm:ss");
     private LocalDateTime start = LocalDateTime.parse(LocalDateTime.now().plusMinutes(2).format(dateTimeFormatter));
     private LocalDateTime end = LocalDateTime.parse(LocalDateTime.now().plusMinutes(10).format(dateTimeFormatter));
-    private UserDto userDto1;
+    private UserDto userDto;
     private Long userIdNotFoud = 101L;
 
 
     @BeforeEach
     void setup() {
-        userDto1 = UserDto.builder()
+        userDto = createUserDto();
+    }
+
+    private UserDto createUserDto() {
+        return UserDto.builder()
                 .id(1L)
-                .name("nameUser1")
-                .email("nameuser1@user.ru")
+                .name("nameFirstUser")
+                .email("nameFirstUser@user.ru")
                 .build();
     }
+
 
     @SneakyThrows
     @Test
@@ -78,15 +83,15 @@ class UserControllerTest {
     @Test
     public void getAllUsersTest() {
         Mockito
-                .when(userService.getAllUsers()).thenReturn(List.of(userDto1));
+                .when(userService.getAllUsers()).thenReturn(List.of(userDto));
 
         mockMvc.perform(get("/users"))
                 .andExpect(status().isOk())
                 .andExpect(content().contentType(MediaType.APPLICATION_JSON))
                 .andExpect(jsonPath("$", hasSize(1)))
                 .andExpect(jsonPath("$[0].id", is(1)))
-                .andExpect(jsonPath("$[0].name", is("nameUser1")))
-                .andExpect(jsonPath("$[0].email", is("nameuser1@user.ru")));
+                .andExpect(jsonPath("$[0].name", is("nameFirstUser")))
+                .andExpect(jsonPath("$[0].email", is("nameFirstUser@user.ru")));
         verify(userService).getAllUsers();
     }
 
@@ -109,34 +114,34 @@ class UserControllerTest {
     public void getUserByIdTest() {
         Mockito
                 .when(userService.getUserById(anyLong()))
-                .thenReturn(userDto1);
+                .thenReturn(userDto);
         mockMvc.perform(get("/users/{id}", userIdNotFoud))
                 .andDo(print())
                 .andExpect(status().isOk())
-                .andExpect(jsonPath("$.id").value(userDto1.getId()))
-                .andExpect(jsonPath("$.name").value(userDto1.getName()))
-                .andExpect(jsonPath("$.email").value(userDto1.getEmail()));
+                .andExpect(jsonPath("$.id").value(userDto.getId()))
+                .andExpect(jsonPath("$.name").value(userDto.getName()))
+                .andExpect(jsonPath("$.email").value(userDto.getEmail()));
     }
 
     @SneakyThrows
     @Test
     public void createUserTest() {
         Mockito
-                .when(userService.createUser(eq(userDto1)))
+                .when(userService.createUser(eq(userDto)))
                 .thenReturn(UserDto.builder()
                         .id(1L)
-                        .name("nameUser1")
-                        .email("nameuser1@user.ru")
+                        .name("nameFirstUser")
+                        .email("nameFirstUser@user.ru")
                         .build());
 
         mockMvc.perform(post("/users")
                         .contentType(MediaType.APPLICATION_JSON)
-                        .content(objectMapper.writeValueAsString(userDto1)))
+                        .content(objectMapper.writeValueAsString(userDto)))
                 .andDo(print())
                 .andExpect(status().isOk())
                 .andExpect(jsonPath("$.id").value(1L))
-                .andExpect(jsonPath("$.name").value("nameUser1"))
-                .andExpect(jsonPath("$.email").value("nameuser1@user.ru"));
+                .andExpect(jsonPath("$.name").value("nameFirstUser"))
+                .andExpect(jsonPath("$.email").value("nameFirstUser@user.ru"));
     }
 
     @SneakyThrows
@@ -148,11 +153,11 @@ class UserControllerTest {
                 .email("nameUpdate1@user.ru")
                 .build();
         Mockito
-                .when(userService.updateUser(eq(userDto1), anyLong()))
+                .when(userService.updateUser(eq(userDto), anyLong()))
                 .thenReturn(userDto2);
         String resultResponse = mockMvc.perform(patch("/users//{id}", 1L)
                         .contentType(MediaType.APPLICATION_JSON)
-                        .content(objectMapper.writeValueAsString(userDto1)))
+                        .content(objectMapper.writeValueAsString(userDto)))
                 .andDo(print())
                 .andExpect(status().isOk())
                 .andExpect(jsonPath("$.id").value(1L))

@@ -43,9 +43,9 @@ public class BookingServiceImpTest {
     private final BookingServiceImp bookingService;
     private final UserRepository userRepository;
     private final ItemRepository itemRepository;
-    private User user1;
-    private User user2;
-    private Item item1;
+    private User firstUser;
+    private User secondUser;
+    private Item item;
     private BookingDto bookingDto1;
     private BookingShortDto bookingShortDto;
     private final DateTimeFormatter dateTimeFormatter = DateTimeFormatter.ofPattern("yyyy-MM-dd'T'HH:mm:ss");
@@ -56,53 +56,68 @@ public class BookingServiceImpTest {
 
     @BeforeEach
     void setup() {
-        user1 = User.builder()
-                .id(1L)
-                .name("nameUser1")
-                .email("nameuser1@user.ru")
-                .build();
+        firstUser = createFirstUser();
+        secondUser = createSecondUser();
+        item = createItem();
+        bookingDto1 = createBookingDto();
+        bookingShortDto = createBookingShortDto();
+    }
 
-        user2 = User.builder()
+    private User createFirstUser() {
+        return User.builder()
+                .id(1L)
+                .name("nameFirstUser")
+                .email("nameFirstUser@user.ru")
+                .build();
+    }
+
+    private User createSecondUser() {
+        return User.builder()
                 .id(2L)
-                .name("nameUser2")
-                .email("nameuser2@user.ru")
+                .name("nameSecondUser")
+                .email("nameSecondUser@user.ru")
                 .build();
+    }
 
-        item1 = Item.builder()
+    private Item createItem() {
+        return Item.builder()
                 .id(1L)
-                .name("nameItem1")
-                .description("descriptionItem1")
-                .owner(user2)
+                .name("nameFirstItem")
+                .description("descriptionFirstItem")
+                .owner(secondUser)
                 .available(true)
                 .build();
+    }
 
-        bookingDto1 = BookingDto.builder()
+    private BookingDto createBookingDto() {
+        return BookingDto.builder()
                 .id(1L)
                 .start(start)
                 .end(end)
-                .item(item1)
-                .booker(user1)
+                .item(item)
+                .booker(firstUser)
                 .status(BookingStatus.WAITING)
                 .build();
+    }
 
-        bookingShortDto = BookingShortDto.builder()
+    private BookingShortDto createBookingShortDto() {
+        return BookingShortDto.builder()
                 .itemId(1L)
                 .start(start)
                 .end(end)
                 .build();
     }
 
-
     @Test
     public void createBookingTest() {
-        userRepository.save(user1);
-        userRepository.save(user2);
-        itemRepository.save(item1);
+        userRepository.save(firstUser);
+        userRepository.save(secondUser);
+        itemRepository.save(item);
         BookingDto result = bookingService.createBooking(bookingShortDto, 1L);
         assertNotNull(result);
         assertNotNull(result.getId());
-        assertEquals(user1.getId(), result.getBooker().getId());
-        assertEquals(item1.getId(), result.getItem().getId());
+        assertEquals(firstUser.getId(), result.getBooker().getId());
+        assertEquals(item.getId(), result.getItem().getId());
         assertEquals(WAITING, result.getStatus());
     }
 
@@ -116,7 +131,7 @@ public class BookingServiceImpTest {
 
     @Test
     public void createBookingUserItemNotFoundTest() {
-        userRepository.save(user1);
+        userRepository.save(firstUser);
         assertThatExceptionOfType(ObjectNotFoundException.class)
                 .isThrownBy(() -> bookingService.createBooking(bookingShortDto, 1L))
                 .withMessage("Вещь с id = 1 не найдена");
@@ -125,7 +140,7 @@ public class BookingServiceImpTest {
 
     @Test
     public void createBookingUserItemIdEmptyTest() {
-        userRepository.save(user1);
+        userRepository.save(firstUser);
         assertThatExceptionOfType(NullPointerException.class)
                 .isThrownBy(() -> bookingService.createBooking(new BookingShortDto().toBuilder()
                         .start(start)
@@ -135,10 +150,10 @@ public class BookingServiceImpTest {
 
     @Test
     public void createBookingAvailableTrueTest() {
-        userRepository.save(user1);
-        userRepository.save(user2);
-        item1.setAvailable(false);
-        itemRepository.save(item1);
+        userRepository.save(firstUser);
+        userRepository.save(secondUser);
+        item.setAvailable(false);
+        itemRepository.save(item);
         assertThatExceptionOfType(BadRequestException.class)
                 .isThrownBy(() -> bookingService.createBooking(bookingShortDto, 1L))
                 .withMessage("Вещь уже забронирована");
@@ -146,9 +161,9 @@ public class BookingServiceImpTest {
 
     @Test
     public void createBookingUserEqualsOwnerTest() {
-        userRepository.save(user1);
-        userRepository.save(user2);
-        itemRepository.save(item1);
+        userRepository.save(firstUser);
+        userRepository.save(secondUser);
+        itemRepository.save(item);
         assertThatExceptionOfType(ObjectNotFoundException.class)
                 .isThrownBy(() -> bookingService.createBooking(bookingShortDto, 2L))
                 .withMessage("Владелец не может забронировать вещь");
@@ -156,9 +171,9 @@ public class BookingServiceImpTest {
 
     @Test
     public void createBookingEndTimeInPastTest() {
-        userRepository.save(user1);
-        userRepository.save(user2);
-        itemRepository.save(item1);
+        userRepository.save(firstUser);
+        userRepository.save(secondUser);
+        itemRepository.save(item);
         bookingShortDto.setEnd(start.minusMonths(2));
         assertThatExceptionOfType(BadRequestException.class)
                 .isThrownBy(() -> bookingService.createBooking(bookingShortDto, 1L))
@@ -174,9 +189,9 @@ public class BookingServiceImpTest {
 
     @Test
     public void approveBookingUserNotEqualsOwnerTest() {
-        userRepository.save(user1);
-        userRepository.save(user2);
-        itemRepository.save(item1);
+        userRepository.save(firstUser);
+        userRepository.save(secondUser);
+        itemRepository.save(item);
         bookingService.createBooking(bookingShortDto, 1L);
         assertThatExceptionOfType(ObjectNotFoundException.class)
                 .isThrownBy(() -> bookingService.approveBooking(1L, 1L, false))
@@ -185,16 +200,16 @@ public class BookingServiceImpTest {
 
     @Test
     public void approveBookingStatusRejectedTest() {
-        userRepository.save(user1);
-        userRepository.save(user2);
-        itemRepository.save(item1);
+        userRepository.save(firstUser);
+        userRepository.save(secondUser);
+        itemRepository.save(item);
         bookingService.createBooking(bookingShortDto, 1L);
         bookingService.approveBooking(2L, 1L, false);
         BookingDto result = bookingService.getById(1L, 1L);
         assertNotNull(result);
         assertNotNull(result.getId());
-        assertEquals(user1.getId(), result.getBooker().getId());
-        assertEquals(item1.getId(), result.getItem().getId());
+        assertEquals(firstUser.getId(), result.getBooker().getId());
+        assertEquals(item.getId(), result.getItem().getId());
         assertEquals(REJECTED, result.getStatus());
         assertThatExceptionOfType(BadRequestException.class)
                 .isThrownBy(() -> bookingService.approveBooking(2L, 1L, false))
@@ -203,16 +218,16 @@ public class BookingServiceImpTest {
 
     @Test
     public void approveBookingStatusTrueTest() {
-        userRepository.save(user1);
-        userRepository.save(user2);
-        itemRepository.save(item1);
+        userRepository.save(firstUser);
+        userRepository.save(secondUser);
+        itemRepository.save(item);
         bookingService.createBooking(bookingShortDto, 1L);
         bookingService.approveBooking(2L, 1L, true);
         BookingDto result = bookingService.getById(1L, 1L);
         assertNotNull(result);
         assertNotNull(result.getId());
-        assertEquals(user1.getId(), result.getBooker().getId());
-        assertEquals(item1.getId(), result.getItem().getId());
+        assertEquals(firstUser.getId(), result.getBooker().getId());
+        assertEquals(item.getId(), result.getItem().getId());
         assertEquals(APPROVED, result.getStatus());
     }
 
@@ -222,11 +237,11 @@ public class BookingServiceImpTest {
         assertThatExceptionOfType(ObjectNotFoundException.class)
                 .isThrownBy(() -> bookingService.getAllByOwner(1L, ALL, 1, 1))
                 .withMessage("Пользователь с id: 1 не найден");
-        userRepository.save(user1);
+        userRepository.save(firstUser);
         List<BookingDto> bookingDtoList = bookingService.getAllByOwner(1L, ALL, 1, 1);
         assertEquals(bookingDtoList.size(), 0);
-        userRepository.save(user2);
-        itemRepository.save(item1);
+        userRepository.save(secondUser);
+        itemRepository.save(item);
         bookingService.createBooking(bookingShortDto, 1L);
         bookingDtoList = bookingService.getAllByOwner(2L, ALL, 0, 1);
         assertEquals(bookingDtoList.size(), 1);
@@ -237,11 +252,11 @@ public class BookingServiceImpTest {
         assertThatExceptionOfType(ObjectNotFoundException.class)
                 .isThrownBy(() -> bookingService.getAllByOwner(1L, CURRENT, 1, 1))
                 .withMessage("Пользователь с id: 1 не найден");
-        userRepository.save(user1);
+        userRepository.save(firstUser);
         List<BookingDto> bookingDtoList = bookingService.getAllByOwner(1L, CURRENT, 1, 1);
         assertEquals(bookingDtoList.size(), 0);
-        userRepository.save(user2);
-        itemRepository.save(item1);
+        userRepository.save(secondUser);
+        itemRepository.save(item);
         bookingShortDto.setStart(start.minusDays(2));
         bookingService.createBooking(bookingShortDto, 1L);
         bookingDtoList = bookingService.getAllByOwner(2L, CURRENT, 0, 1);
@@ -253,11 +268,11 @@ public class BookingServiceImpTest {
         assertThatExceptionOfType(ObjectNotFoundException.class)
                 .isThrownBy(() -> bookingService.getAllByOwner(1L, PAST, 1, 1))
                 .withMessage("Пользователь с id: 1 не найден");
-        userRepository.save(user1);
+        userRepository.save(firstUser);
         List<BookingDto> bookingDtoList = bookingService.getAllByOwner(1L, PAST, 1, 1);
         assertEquals(bookingDtoList.size(), 0);
-        userRepository.save(user2);
-        itemRepository.save(item1);
+        userRepository.save(secondUser);
+        itemRepository.save(item);
         bookingShortDto.setEnd(start.minusDays(2));
         bookingShortDto.setStart(start.minusDays(5));
         bookingService.createBooking(bookingShortDto, 1L);
@@ -270,11 +285,11 @@ public class BookingServiceImpTest {
         assertThatExceptionOfType(ObjectNotFoundException.class)
                 .isThrownBy(() -> bookingService.getAllByOwner(1L, FUTURE, 1, 1))
                 .withMessage("Пользователь с id: 1 не найден");
-        userRepository.save(user1);
+        userRepository.save(firstUser);
         List<BookingDto> bookingDtoList = bookingService.getAllByOwner(1L, FUTURE, 1, 1);
         assertEquals(bookingDtoList.size(), 0);
-        userRepository.save(user2);
-        itemRepository.save(item1);
+        userRepository.save(secondUser);
+        itemRepository.save(item);
         bookingShortDto.setStart(start.plusDays(1));
         bookingShortDto.setEnd(start.plusDays(5));
         bookingService.createBooking(bookingShortDto, 1L);
@@ -287,11 +302,11 @@ public class BookingServiceImpTest {
         assertThatExceptionOfType(ObjectNotFoundException.class)
                 .isThrownBy(() -> bookingService.getAllByOwner(1L, BookingState.WAITING, 1, 1))
                 .withMessage("Пользователь с id: 1 не найден");
-        userRepository.save(user1);
+        userRepository.save(firstUser);
         List<BookingDto> bookingDtoList = bookingService.getAllByOwner(1L, BookingState.WAITING, 1, 1);
         assertEquals(bookingDtoList.size(), 0);
-        userRepository.save(user2);
-        itemRepository.save(item1);
+        userRepository.save(secondUser);
+        itemRepository.save(item);
         bookingService.createBooking(bookingShortDto, 1L);
         bookingDtoList = bookingService.getAllByOwner(2L, BookingState.WAITING, 0, 1);
         assertEquals(bookingDtoList.size(), 1);
@@ -302,11 +317,11 @@ public class BookingServiceImpTest {
         assertThatExceptionOfType(ObjectNotFoundException.class)
                 .isThrownBy(() -> bookingService.getAllByOwner(2L, BookingState.REJECTED, 1, 1))
                 .withMessage("Пользователь с id: 2 не найден");
-        userRepository.save(user1);
-        userRepository.save(user2);
+        userRepository.save(firstUser);
+        userRepository.save(secondUser);
         List<BookingDto> bookingDtoList = bookingService.getAllByOwner(2L, BookingState.REJECTED, 1, 1);
         assertEquals(bookingDtoList.size(), 0);
-        itemRepository.save(item1);
+        itemRepository.save(item);
         bookingService.createBooking(bookingShortDto, 1L);
         bookingService.approveBooking(2L, 1L, false);
         bookingDtoList = bookingService.getAllByOwner(2L, BookingState.REJECTED, 0, 1);
@@ -318,7 +333,7 @@ public class BookingServiceImpTest {
         assertThatExceptionOfType(ObjectNotFoundException.class)
                 .isThrownBy(() -> bookingService.getAllByOwner(1L, UNSUPPORTED_STATUS, 1, 1))
                 .withMessage("Пользователь с id: 1 не найден");
-        userRepository.save(user1);
+        userRepository.save(firstUser);
         assertThatExceptionOfType(BadRequestException.class)
                 .isThrownBy(() -> bookingService.getAllByOwner(1L, UNSUPPORTED_STATUS, 1, 1))
                 .withMessage("Unknown state: UNSUPPORTED_STATUS");
@@ -330,11 +345,11 @@ public class BookingServiceImpTest {
         assertThatExceptionOfType(ObjectNotFoundException.class)
                 .isThrownBy(() -> bookingService.getAllByUser(1L, ALL, 1, 1))
                 .withMessage("Пользователь с id: 1 не найден");
-        userRepository.save(user1);
+        userRepository.save(firstUser);
         List<BookingDto> bookingDtoList = bookingService.getAllByUser(1L, ALL, 1, 1);
         assertEquals(bookingDtoList.size(), 0);
-        userRepository.save(user2);
-        itemRepository.save(item1);
+        userRepository.save(secondUser);
+        itemRepository.save(item);
         bookingService.createBooking(bookingShortDto, 1L);
         bookingDtoList = bookingService.getAllByUser(1L, ALL, 0, 1);
         assertEquals(bookingDtoList.size(), 1);
@@ -345,11 +360,11 @@ public class BookingServiceImpTest {
         assertThatExceptionOfType(ObjectNotFoundException.class)
                 .isThrownBy(() -> bookingService.getAllByUser(1L, CURRENT, 1, 1))
                 .withMessage("Пользователь с id: 1 не найден");
-        userRepository.save(user1);
+        userRepository.save(firstUser);
         List<BookingDto> bookingDtoList = bookingService.getAllByUser(1L, CURRENT, 1, 1);
         assertEquals(bookingDtoList.size(), 0);
-        userRepository.save(user2);
-        itemRepository.save(item1);
+        userRepository.save(secondUser);
+        itemRepository.save(item);
         bookingShortDto.setStart(start.minusDays(2));
         bookingService.createBooking(bookingShortDto, 1L);
         bookingDtoList = bookingService.getAllByUser(1L, CURRENT, 0, 1);
@@ -361,11 +376,11 @@ public class BookingServiceImpTest {
         assertThatExceptionOfType(ObjectNotFoundException.class)
                 .isThrownBy(() -> bookingService.getAllByUser(1L, PAST, 1, 1))
                 .withMessage("Пользователь с id: 1 не найден");
-        userRepository.save(user1);
+        userRepository.save(firstUser);
         List<BookingDto> bookingDtoList = bookingService.getAllByUser(1L, PAST, 1, 1);
         assertEquals(bookingDtoList.size(), 0);
-        userRepository.save(user2);
-        itemRepository.save(item1);
+        userRepository.save(secondUser);
+        itemRepository.save(item);
         bookingShortDto.setEnd(start.minusDays(2));
         bookingShortDto.setStart(start.minusDays(5));
         bookingService.createBooking(bookingShortDto, 1L);
@@ -378,11 +393,11 @@ public class BookingServiceImpTest {
         assertThatExceptionOfType(ObjectNotFoundException.class)
                 .isThrownBy(() -> bookingService.getAllByUser(1L, FUTURE, 1, 1))
                 .withMessage("Пользователь с id: 1 не найден");
-        userRepository.save(user1);
+        userRepository.save(firstUser);
         List<BookingDto> bookingDtoList = bookingService.getAllByUser(1L, FUTURE, 1, 1);
         assertEquals(bookingDtoList.size(), 0);
-        userRepository.save(user2);
-        itemRepository.save(item1);
+        userRepository.save(secondUser);
+        itemRepository.save(item);
         bookingShortDto.setStart(start.plusDays(1));
         bookingShortDto.setEnd(start.plusDays(5));
         bookingService.createBooking(bookingShortDto, 1L);
@@ -395,11 +410,11 @@ public class BookingServiceImpTest {
         assertThatExceptionOfType(ObjectNotFoundException.class)
                 .isThrownBy(() -> bookingService.getAllByUser(1L, BookingState.WAITING, 1, 1))
                 .withMessage("Пользователь с id: 1 не найден");
-        userRepository.save(user1);
+        userRepository.save(firstUser);
         List<BookingDto> bookingDtoList = bookingService.getAllByUser(1L, BookingState.WAITING, 1, 1);
         assertEquals(bookingDtoList.size(), 0);
-        userRepository.save(user2);
-        itemRepository.save(item1);
+        userRepository.save(secondUser);
+        itemRepository.save(item);
         bookingService.createBooking(bookingShortDto, 1L);
         bookingDtoList = bookingService.getAllByUser(1L, BookingState.WAITING, 0, 1);
         assertEquals(bookingDtoList.size(), 1);
@@ -410,11 +425,11 @@ public class BookingServiceImpTest {
         assertThatExceptionOfType(ObjectNotFoundException.class)
                 .isThrownBy(() -> bookingService.getAllByUser(1L, BookingState.REJECTED, 1, 1))
                 .withMessage("Пользователь с id: 1 не найден");
-        userRepository.save(user1);
+        userRepository.save(firstUser);
         List<BookingDto> bookingDtoList = bookingService.getAllByUser(1L, BookingState.REJECTED, 1, 1);
         assertEquals(bookingDtoList.size(), 0);
-        userRepository.save(user2);
-        itemRepository.save(item1);
+        userRepository.save(secondUser);
+        itemRepository.save(item);
         bookingService.createBooking(bookingShortDto, 1L);
         bookingService.approveBooking(2L, 1L, false);
         bookingDtoList = bookingService.getAllByUser(1L, BookingState.REJECTED, 0, 1);
@@ -426,7 +441,7 @@ public class BookingServiceImpTest {
         assertThatExceptionOfType(ObjectNotFoundException.class)
                 .isThrownBy(() -> bookingService.getAllByUser(1L, UNSUPPORTED_STATUS, 1, 1))
                 .withMessage("Пользователь с id: 1 не найден");
-        userRepository.save(user1);
+        userRepository.save(firstUser);
 
         assertThatExceptionOfType(BadRequestException.class)
                 .isThrownBy(() -> bookingService.getAllByUser(1L, UNSUPPORTED_STATUS, 1, 1))

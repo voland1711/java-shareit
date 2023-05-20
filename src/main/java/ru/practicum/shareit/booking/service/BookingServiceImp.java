@@ -103,24 +103,24 @@ public class BookingServiceImp implements BookingService {
         log.info("state: {}", state);
         switch (state) {
             case ALL:
-                bookingsList.addAll(bookingRepository.findAllByBooker(user, pageable));
+                bookingsList.addAll(bookingRepository.findAllByBooker(user, pageable).toList());
                 break;
             case CURRENT:
                 bookingsList.addAll(bookingRepository.findAllByBookerAndStartBeforeAndEndAfter(user,
-                        LocalDateTime.now(), LocalDateTime.now(), pageable));
+                        LocalDateTime.now(), LocalDateTime.now(), pageable).toList());
                 break;
             case PAST:
                 bookingsList.addAll(bookingRepository.findAllByBookerAndEndBefore(user,
-                        LocalDateTime.now(), pageable));
+                        LocalDateTime.now(), pageable).toList());
                 break;
             case FUTURE:
-                bookingsList.addAll(bookingRepository.findAllByBookerAndStartAfter(user, LocalDateTime.now(), pageable));
+                bookingsList.addAll(bookingRepository.findAllByBookerAndStartAfter(user, LocalDateTime.now(), pageable).toList());
                 break;
             case WAITING:
-                bookingsList.addAll(bookingRepository.findAllByBookerAndStatusEquals(user, WAITING, pageable));
+                bookingsList.addAll(bookingRepository.findAllByBookerAndStatusEquals(user, WAITING, pageable).toList());
                 break;
             case REJECTED:
-                bookingsList.addAll(bookingRepository.findAllByBookerAndStatusEquals(user, REJECTED, pageable));
+                bookingsList.addAll(bookingRepository.findAllByBookerAndStatusEquals(user, REJECTED, pageable).toList());
                 break;
             default:
                 throw new BadRequestException("Unknown state: UNSUPPORTED_STATUS");
@@ -144,24 +144,24 @@ public class BookingServiceImp implements BookingService {
         log.info("state: {}", state);
         switch (state) {
             case ALL:
-                bookingsList.addAll(bookingRepository.findAllByItemOwner(user, pageable));
+                bookingsList.addAll(bookingRepository.findAllByItemOwner(user, pageable).toList());
                 break;
             case CURRENT:
                 bookingsList.addAll(bookingRepository.findAllByItemOwnerAndStartBeforeAndEndAfter(user,
-                        LocalDateTime.now(), LocalDateTime.now(), pageable));
+                        LocalDateTime.now(), LocalDateTime.now(), pageable).toList());
                 break;
             case PAST:
                 bookingsList.addAll(bookingRepository.findAllByItemOwnerAndEndBefore(user,
-                        LocalDateTime.now(), pageable));
+                        LocalDateTime.now(), pageable).toList());
                 break;
             case FUTURE:
-                bookingsList.addAll(bookingRepository.findAllByItemOwnerAndStartAfter(user, LocalDateTime.now(), pageable));
+                bookingsList.addAll(bookingRepository.findAllByItemOwnerAndStartAfter(user, LocalDateTime.now(), pageable).toList());
                 break;
             case WAITING:
-                bookingsList.addAll(bookingRepository.findAllByItemOwnerAndStatusEquals(user, WAITING, pageable));
+                bookingsList.addAll(bookingRepository.findAllByItemOwnerAndStatusEquals(user, WAITING, pageable).toList());
                 break;
             case REJECTED:
-                bookingsList.addAll(bookingRepository.findAllByItemOwnerAndStatusEquals(user, REJECTED, pageable));
+                bookingsList.addAll(bookingRepository.findAllByItemOwnerAndStatusEquals(user, REJECTED, pageable).toList());
                 break;
             default:
                 throw new BadRequestException("Unknown state: UNSUPPORTED_STATUS");

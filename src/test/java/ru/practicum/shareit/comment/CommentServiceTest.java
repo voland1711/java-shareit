@@ -46,11 +46,11 @@ public class CommentServiceTest {
     private final CommentRepository commentRepository;
     private final CommentService commentService;
     private final BookingRepository bookingRepository;
-    private Item item1;
-    private User user1;
-    private User user2;
+    private Item item;
+    private User firstUser;
+    private User secondUser;
     private UserDto userDto1;
-    private UserDto userDto2;
+    private UserDto secondUserDto;
     private Booking booking;
     private Comment comment;
     private CommentShortDto commentShortDto;
@@ -60,59 +60,91 @@ public class CommentServiceTest {
 
     @BeforeEach
     void setup() {
-        user1 = User.builder()
+        firstUser = createFirstUser();
+        secondUser = createSecondUser();
+        userDto1 = createFirstUserDto();
+        item = createItem();
+        secondUserDto = createSecondUserDto();
+        booking = createBooking();
+        comment = createTestComment();
+        commentShortDto = createCommentShortDto();
+    }
+
+    private User createFirstUser() {
+        return User.builder()
                 .id(1L)
-                .name("nameUser1")
-                .email("nameuser1@user.ru")
+                .name("nameFirstUser")
+                .email("nameFirstUser@user.ru")
                 .build();
-        user2 = User.builder()
+    }
+
+    private User createSecondUser() {
+        return User.builder()
+                .id(2L)
+                .name("nameSecondUser")
+                .email("nameSecondUser@user.ru")
+                .build();
+    }
+
+    private UserDto createFirstUserDto() {
+        return UserDto.builder()
                 .id(1L)
-                .name("nameUser1")
-                .email("nameuser1@user.ru")
+                .name("nameFirstUser")
+                .email("nameFirstUser@user.ru")
                 .build();
-        userDto1 = UserDto.builder()
-                .id(1L)
-                .name("nameUser1")
-                .email("nameuser1@user.ru")
+    }
+
+    private UserDto createSecondUserDto() {
+        return UserDto.builder()
+                .id(2L)
+                .name("nameSecondUser")
+                .email("nameSecondUser@user.ru")
                 .build();
-        ;
-        item1 = Item.builder()
+    }
+
+    private Item createItem() {
+        return Item.builder()
                 .id(1L)
                 .name("item1")
                 .description("description1")
                 .available(true)
-                .owner(user1)
+                .owner(firstUser)
                 .build();
-        userDto2 = UserDto.builder()
-                .id(2L)
-                .name("nameUser2")
-                .email("nameuser2@user.ru")
-                .build();
-        booking = Booking.builder()
+    }
+
+    private Booking createBooking() {
+        return Booking.builder()
                 .id(1L)
                 .start(start)
                 .end(end)
-                .item(item1)
-                .booker(user2)
+                .item(item)
+                .booker(secondUser)
                 .status(BookingStatus.APPROVED)
                 .build();
-        comment = Comment.builder()
+    }
+
+    private Comment createTestComment() {
+        return Comment.builder()
                 .id(1L)
                 .text("text1")
-                .item(item1)
-                .author(user1)
+                .item(item)
+                .author(firstUser)
                 .created(end.minusDays(3))
                 .build();
-        commentShortDto = CommentShortDto.builder()
+    }
+
+    private CommentShortDto createCommentShortDto() {
+        return CommentShortDto.builder()
                 .text("text1")
                 .build();
     }
 
+
     @Test
     public void createComment() {
         userRepository.save(toUser(userDto1));
-        userRepository.save(toUser(userDto2));
-        itemRepository.save(item1);
+        userRepository.save(toUser(secondUserDto));
+        itemRepository.save(item);
         bookingRepository.save(booking);
         CommentDto resultCreateComment = toCommentDto(commentRepository.save(comment));
 
@@ -139,8 +171,8 @@ public class CommentServiceTest {
 
     @Test
     public void createCommentUserNotBooker() {
-        userRepository.save(user1);
-        itemRepository.save(item1);
+        userRepository.save(firstUser);
+        itemRepository.save(item);
         assertThatExceptionOfType(BadRequestException.class)
                 .isThrownBy(() -> commentService.createComment(1L, 1L, commentShortDto))
                 .withMessage("Вы не можете оставить комментарий");
@@ -149,15 +181,15 @@ public class CommentServiceTest {
     @Test
     public void createCommentValidData() {
         userRepository.save(toUser(userDto1));
-        userRepository.save(toUser(userDto2));
-        itemRepository.save(item1);
-        booking.setBooker(user2);
+        userRepository.save(toUser(secondUserDto));
+        itemRepository.save(item);
+        booking.setBooker(secondUser);
         bookingRepository.save(booking);
-        CommentDto resultCreateComment = commentService.createComment(1L, 1L, commentShortDto);
+        CommentDto resultCreateComment = commentService.createComment(1L, 2L, commentShortDto);
         assertNotNull(resultCreateComment);
         assertNotNull(resultCreateComment.getId());
         assertEquals(commentShortDto.getText(), resultCreateComment.getText());
-        assertEquals(comment.getAuthor(), user1);
+        assertEquals(comment.getAuthor(), firstUser);
     }
 
 }

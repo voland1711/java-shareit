@@ -40,52 +40,64 @@ public class ItemRequestServiceTest {
     private final ItemRequestRepository itemRequestRepository;
     private final ItemRequestService itemRequestService;
     private final UserRepository userRepository;
-    private ItemRequestDto itemRequestDto1;
-    private UserDto userDto1;
+    private ItemRequestDto itemRequestDto;
+    private UserDto userDto;
     private ItemRequestResponseDto itemRequestResponseDto1;
     private ItemRequest itemRequest;
 
     @BeforeEach
     void setup() {
-        itemRequestDto1 = ItemRequestDto.builder()
-                .description("Хотел бы воспользоваться description1")
-                .build();
+        itemRequestDto = createItemRequestDto();
+        userDto = createUserDto();
+        itemRequestResponseDto1 = createItemRequestResponseDto();
+    }
 
-        userDto1 = UserDto.builder()
-                .name("nameUser1")
-                .email("nameuser1@user.ru")
-                .build();
-
-        itemRequestResponseDto1 = ItemRequestResponseDto.builder()
+    private ItemRequestResponseDto createItemRequestResponseDto() {
+        return ItemRequestResponseDto.builder()
                 .id(1L)
                 .description("Хотел бы воспользоваться description1")
                 .build();
     }
 
+    private ItemRequestDto createItemRequestDto() {
+        return ItemRequestDto.builder()
+                .description("Хотел бы воспользоваться description1")
+                .build();
+    }
+
+    private UserDto createUserDto() {
+        return UserDto.builder()
+                .id(1L)
+                .name("nameFirstUser")
+                .email("nameFirstUser@user.ru")
+                .build();
+    }
+
+
     @Test
     @DisplayName("Создаем ItemRequest, user not found")
     public void createItemRequestUserNotFoundTest() {
         assertThatExceptionOfType(ObjectNotFoundException.class)
-                .isThrownBy(() -> itemRequestService.createItemRequest(1L, itemRequestDto1))
+                .isThrownBy(() -> itemRequestService.createItemRequest(1L, itemRequestDto))
                 .withMessage("Пользователь с id = 1  не найден");
     }
 
     @Test
     @DisplayName("Создаем ItemRequest, данные валидны")
     public void createItemRequestTest() {
-        userRepository.save(toUser(userDto1));
-        ItemRequestResponseDto itemRequestResponseDto = itemRequestService.createItemRequest(1L, itemRequestDto1);
+        userRepository.save(toUser(userDto));
+        ItemRequestResponseDto itemRequestResponseDto = itemRequestService.createItemRequest(1L, itemRequestDto);
         assertThat(itemRequestResponseDto)
                 .isNotNull()
                 .extracting(ItemRequestResponseDto::getDescription)
-                .isEqualTo(itemRequestDto1.getDescription());
+                .isEqualTo(itemRequestDto.getDescription());
     }
 
     @Test
     @DisplayName("Create ItemRequest, description is blank")
     public void createItemRequestDescriptionIsBlankTest() {
         itemRequest = ItemRequest.builder().build();
-        itemRequest.setRequester(userRepository.save(toUser(userDto1)));
+        itemRequest.setRequester(userRepository.save(toUser(userDto)));
         assertThatExceptionOfType(ConstraintViolationException.class)
                 .isThrownBy(() -> itemRequestRepository.save(itemRequest))
                 .withMessageContaining("description")
@@ -106,11 +118,11 @@ public class ItemRequestServiceTest {
     @Test
     @DisplayName("Проверяем пагинацию и работу метода getAllItemRequest")
     public void getAllItemRequestTest() {
-        userRepository.save(toUser(userDto1));
+        userRepository.save(toUser(userDto));
         userRepository.save(toUser(new UserDto().toBuilder()
                 .name("name2")
                 .email("name@name.ru").build()));
-        itemRequestService.createItemRequest(1L, itemRequestDto1);
+        itemRequestService.createItemRequest(1L, itemRequestDto);
         itemRequestService.createItemRequest(1L, new ItemRequestDto().toBuilder()
                 .description("description2")
                 .build());
@@ -135,11 +147,11 @@ public class ItemRequestServiceTest {
     @Test
     @DisplayName("Проверяем пагинацию и работу метода getAllByRequester")
     public void getAllByRequesterTest() {
-        userRepository.save(toUser(userDto1));
+        userRepository.save(toUser(userDto));
         userRepository.save(toUser(new UserDto().toBuilder()
                 .name("name2")
                 .email("name@name.ru").build()));
-        itemRequestService.createItemRequest(1L, itemRequestDto1);
+        itemRequestService.createItemRequest(1L, itemRequestDto);
         itemRequestService.createItemRequest(1L, new ItemRequestDto().toBuilder()
                 .description("description2")
                 .build());
@@ -164,12 +176,11 @@ public class ItemRequestServiceTest {
                 .withMessage("Пользователь с id = 3  не найден");
     }
 
-
     @Test
     @DisplayName("Проверяем работу метода getByIdItemRequest")
     public void getByIdItemRequestTest() {
-        userRepository.save(toUser(userDto1));
-        itemRequestService.createItemRequest(1L, itemRequestDto1);
+        userRepository.save(toUser(userDto));
+        itemRequestService.createItemRequest(1L, itemRequestDto);
         ItemRequestResponseDto itemRequestResponseDto2 = itemRequestService.createItemRequest(1L, new ItemRequestDto().toBuilder()
                 .description("description2")
                 .build());

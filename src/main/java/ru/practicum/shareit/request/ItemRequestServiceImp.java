@@ -19,8 +19,10 @@ import ru.practicum.shareit.user.exception.ObjectNotFoundException;
 import ru.practicum.shareit.user.model.User;
 import ru.practicum.shareit.user.repository.UserRepository;
 
+import java.util.Collections;
 import java.util.Comparator;
 import java.util.List;
+import java.util.Map;
 import java.util.stream.Collectors;
 
 import static ru.practicum.shareit.request.model.ItemRequestMapper.toItemRequest;
@@ -102,12 +104,24 @@ public class ItemRequestServiceImp implements ItemRequestService {
     }
 
     private List<ItemRequestResponseDto> getItemsFoRequestResponseDto(List<ItemRequestResponseDto> itemRequestResponseDtos) {
+        Map<Long, List<ItemDto>> itemsMap = itemRepository.findAllByRequestIdIn(
+                        itemRequestResponseDtos.stream()
+                                .map(ItemRequestResponseDto::getId)
+                                .collect(Collectors.toList())
+                )
+                .stream()
+                .map(ItemMapper::toItemDto)
+                .collect(Collectors.groupingBy(ItemDto::getRequestId));
+
         return itemRequestResponseDtos.stream().peek(itemRequestResponseDto -> {
-            List<ItemDto> itemDtos = itemRepository.findAllByRequestId(itemRequestResponseDto.getId())
-                    .stream().map(ItemMapper::toItemDto).collect(Collectors.toList());
+            List<ItemDto> itemDtos = itemsMap.getOrDefault(itemRequestResponseDto.getId(), Collections.emptyList());
             itemRequestResponseDto.setItems(itemDtos);
         }).collect(Collectors.toList());
     }
+
+
+
 }
+
 
 

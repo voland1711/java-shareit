@@ -61,7 +61,7 @@ class BookingShortDtoTest {
     }
 
     @Test
-    @DisplayName("Данные корректны")
+    @DisplayName("Поля объекта заполнены валидными данными")
     void serializeBookingShortDtoTest() throws Exception {
         BookingShortDto bookingShortDto = new BookingShortDto().toBuilder()
                 .itemId(1L)
