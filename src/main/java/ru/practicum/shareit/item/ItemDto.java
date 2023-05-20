@@ -1,4 +1,4 @@
-package ru.practicum.shareit.item.dto;
+package ru.practicum.shareit.item;
 
 import lombok.*;
 import ru.practicum.shareit.booking.dto.BookingDtoResponse;
@@ -13,7 +13,11 @@ import java.util.List;
  */
 @Getter
 @Setter
+@NoArgsConstructor
+@AllArgsConstructor
 @Builder(toBuilder = true)
+@ToString
+@EqualsAndHashCode
 public class ItemDto {
 
     private Long id;
@@ -28,7 +32,7 @@ public class ItemDto {
 
     private User owner;
 
-    private String request;
+    private Long requestId;
 
     private BookingDtoResponse nextBooking;
 

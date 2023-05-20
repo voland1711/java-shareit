@@ -37,6 +37,8 @@ public class CommentServiceImp implements CommentService {
         log.info("Работает метод: createComment");
         User user = userRepository.findById(userId)
                 .orElseThrow(() -> new ObjectNotFoundException("Пользователь с id = " + userId + " не найден"));
+        Item item = itemRepository.findById(itemId)
+                .orElseThrow(() -> new ObjectNotFoundException("Вещь с id = " + itemId + " осутствует"));
 
         bookingRepository.findAll().stream()
                 .filter(booking -> Objects.equals(booking.getItem().getId(), itemId))
@@ -46,8 +48,6 @@ public class CommentServiceImp implements CommentService {
                 .findFirst()
                 .orElseThrow(() -> new BadRequestException("Вы не можете оставить комментарий"));
 
-        Item item = itemRepository.findById(itemId)
-                .orElseThrow(() -> new ObjectNotFoundException("Вещь с id = " + itemId + " осутствует"));
         Comment comment = Comment.builder()
                 .text(commentShortDto.getText())
                 .item(item)

@@ -7,9 +7,8 @@ import lombok.*;
 @NoArgsConstructor
 @AllArgsConstructor
 @Builder(toBuilder = true)
+@EqualsAndHashCode
 public class BookingDtoResponse {
-
     private Long id;
-
     private Long bookerId;
 }

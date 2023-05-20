@@ -18,6 +18,7 @@ import java.time.LocalDateTime;
 @Table(name = "bookings")
 @NoArgsConstructor
 @AllArgsConstructor
+@ToString
 public class Booking {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -41,15 +42,4 @@ public class Booking {
     @Column(name = "status", length = 1000, nullable = false)
     private BookingStatus status;
 
-    @Override
-    public String toString() {
-        return "Booking{" +
-                "id=" + id +
-                ", start=" + start +
-                ", end=" + end +
-                ", item=" + item +
-                ", booker=" + booker +
-                ", status=" + status +
-                '}';
-    }
 }
