@@ -42,7 +42,6 @@ public class UserServiceTest {
     @BeforeEach
     void setup() {
         firstUser = createFirstUser();
-
         secondUser = createSecondUser();
         firstUserDto = createFirstUserDto();
         secondUserDto = createSecondUserDto();
@@ -79,7 +78,7 @@ public class UserServiceTest {
                 .email("nameSecondUser@user.ru")
                 .build();
     }
-    
+
     @Test
     @DisplayName("Создание пользователя, данные заполненны валидными данными")
     public void createUserTest() {
