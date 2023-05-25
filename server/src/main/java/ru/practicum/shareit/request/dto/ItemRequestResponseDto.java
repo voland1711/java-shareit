@@ -25,5 +25,6 @@ public class ItemRequestResponseDto implements Serializable {
     @JsonProperty("created")
     private LocalDateTime created;
 
-    private Collection<ItemDto> items;
+    @JsonProperty("items")
+    private transient Collection<ItemDto> items;
 }
