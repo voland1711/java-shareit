@@ -47,7 +47,7 @@ public class ItemServiceImpl implements ItemService {
         return itemRepository.findAll().stream()
                 .filter(item -> item.getOwner().getId() == userId)
                 .map(item -> getLastAndNextBooking(item, userId))
-                .sorted(Comparator.comparing(ItemDto::getId).reversed())
+                .sorted(Comparator.comparing(ItemDto::getId))
                 .collect(Collectors.toList());
     }
 
