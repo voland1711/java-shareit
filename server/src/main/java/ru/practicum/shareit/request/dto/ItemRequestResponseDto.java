@@ -1,10 +1,8 @@
 package ru.practicum.shareit.request.dto;
 
-import com.fasterxml.jackson.annotation.JsonProperty;
 import lombok.*;
-import ru.practicum.shareit.item.ItemDto;
+import ru.practicum.shareit.item.dto.ItemDto;
 
-import java.io.Serializable;
 import java.time.LocalDateTime;
 import java.util.Collection;
 
@@ -14,17 +12,13 @@ import java.util.Collection;
 @AllArgsConstructor
 @Builder(toBuilder = true)
 @ToString
-public class ItemRequestResponseDto implements Serializable {
+public class ItemRequestResponseDto {
 
-    @JsonProperty("id")
     private Long id;
 
-    @JsonProperty("description")
     private String description;
 
-    @JsonProperty("created")
     private LocalDateTime created;
 
-    @JsonProperty("items")
     private Collection<ItemDto> items;
 }
