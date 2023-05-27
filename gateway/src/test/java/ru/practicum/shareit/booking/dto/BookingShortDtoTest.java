@@ -9,13 +9,10 @@ import org.json.JSONObject;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
-import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.json.JsonTest;
 import org.springframework.boot.test.json.JacksonTester;
 import org.springframework.boot.test.json.JsonContent;
-import org.springframework.test.context.junit4.SpringRunner;
-import ru.practicum.shareit.booking.Dto.BookingShortDto;
 
 import javax.validation.ConstraintViolation;
 import javax.validation.Validation;
@@ -31,7 +28,6 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
 
 
 @JsonTest
-@RunWith(SpringRunner.class)
 class BookingShortDtoTest {
     @Autowired
     private JacksonTester<BookingShortDto> bookingShortDtoJacksonTester;

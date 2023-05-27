@@ -1,4 +1,4 @@
-package ru.practicum.shareit.booking.Dto;
+package ru.practicum.shareit.booking.dto;
 
 import com.fasterxml.jackson.annotation.JsonFormat;
 import com.fasterxml.jackson.annotation.JsonProperty;
