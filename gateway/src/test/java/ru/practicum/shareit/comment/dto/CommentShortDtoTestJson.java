@@ -65,7 +65,7 @@ public class CommentShortDtoTestJson {
     @SneakyThrows
     @Test
     @DisplayName("Поле 'text' является пустым")
-    void CommentShortDtoNameIsBlankTest() {
+    void commentShortDtoNameIsBlankTest() {
         String jsonItemDto = jsonCommentShortDto.put("text", "").toString();
 
         CommentShortDto commentShortDto = objectMapper.readValue(jsonItemDto, CommentShortDto.class);
