@@ -1,10 +1,7 @@
 package ru.practicum.shareit.user.dto;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
-import lombok.AllArgsConstructor;
-import lombok.EqualsAndHashCode;
-import lombok.Getter;
-import lombok.Setter;
+import lombok.*;
 
 import javax.validation.constraints.Email;
 import javax.validation.constraints.NotBlank;
@@ -16,6 +13,7 @@ import java.io.Serializable;
 @NotNull
 @AllArgsConstructor
 @EqualsAndHashCode
+@NoArgsConstructor
 public class UserDto implements Serializable {
 
     @JsonProperty("id")

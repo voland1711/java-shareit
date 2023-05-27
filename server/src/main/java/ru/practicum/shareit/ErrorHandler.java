@@ -44,11 +44,4 @@ public class ErrorHandler {
         return Map.of("error", e.getFieldError().getField() + " " + e.getFieldError().getDefaultMessage());
     }
 
-//    @ExceptionHandler
-//    @ResponseStatus(HttpStatus.BAD_REQUEST)
-//    public Map<String, String> handleConstraintViolationException(final ConstraintViolationException e) {
-//        log.error(String.valueOf(e));
-//        return Map.of("error", e.getMessage());
-//    }
-
 }

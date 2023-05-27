@@ -25,7 +25,7 @@ public class BookingController {
 
     @GetMapping
     public ResponseEntity<Object> getAllByUser(@RequestHeader(SHARER_USER_ID) Long userId,
-                                               @RequestParam(name = "state",defaultValue = "ALL") String stateParam,
+                                               @RequestParam(name = "state", defaultValue = "ALL") String stateParam,
                                                @PositiveOrZero @RequestParam(name = "from", defaultValue = "0") Integer from,
                                                @Positive @RequestParam(name = "size", defaultValue = "10") Integer size) {
         log.info("Работает: BookingController.getAllByUser");
@@ -37,7 +37,7 @@ public class BookingController {
 
     @GetMapping("/owner")
     public ResponseEntity<Object> getAllByOwner(@RequestHeader(SHARER_USER_ID) Long userId,
-                                                @RequestParam(name = "state",defaultValue = "ALL") String stateParam,
+                                                @RequestParam(name = "state", defaultValue = "ALL") String stateParam,
                                                 @PositiveOrZero @RequestParam(name = "from", defaultValue = "0") Integer from,
                                                 @Positive @RequestParam(name = "size", defaultValue = "10") Integer size) {
         log.info("Работает: BookingController.getAllByOwner");
@@ -62,8 +62,8 @@ public class BookingController {
 
     @PatchMapping(PATH_ID)
     public ResponseEntity<Object> approveBooking(@RequestHeader(SHARER_USER_ID) Long userId,
-                                          @PathVariable Long bookingId,
-                                          @RequestParam Boolean approved) {
+                                                 @PathVariable Long bookingId,
+                                                 @RequestParam Boolean approved) {
         log.info("Работает: BookingController.approve");
         return bookingClient.approveBooking(userId, bookingId, approved);
     }
