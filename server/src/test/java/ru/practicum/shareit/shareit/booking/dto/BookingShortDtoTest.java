@@ -17,17 +17,12 @@ import org.springframework.boot.test.json.JsonContent;
 import org.springframework.test.context.junit4.SpringRunner;
 import ru.practicum.shareit.booking.dto.BookingShortDto;
 
-import javax.validation.ConstraintViolation;
-import javax.validation.Validation;
 import javax.validation.Validator;
-import javax.validation.ValidatorFactory;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
-import java.util.Set;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatExceptionOfType;
-import static org.junit.jupiter.api.Assertions.assertEquals;
 
 
 @JsonTest

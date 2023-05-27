@@ -9,7 +9,6 @@ import org.springframework.boot.test.autoconfigure.jdbc.AutoConfigureTestDatabas
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.test.annotation.DirtiesContext;
-import ru.practicum.shareit.booking.exception.BadRequestException;
 import ru.practicum.shareit.item.ItemDto;
 import ru.practicum.shareit.item.exception.ItemNotFoundException;
 import ru.practicum.shareit.item.model.Item;

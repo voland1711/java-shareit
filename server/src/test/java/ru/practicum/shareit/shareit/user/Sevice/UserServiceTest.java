@@ -15,7 +15,6 @@ import ru.practicum.shareit.user.model.User;
 import ru.practicum.shareit.user.model.UserMapper;
 import ru.practicum.shareit.user.service.UserServiceImpl;
 
-import javax.validation.ConstraintViolationException;
 import java.util.Arrays;
 import java.util.HashSet;
 import java.util.List;
